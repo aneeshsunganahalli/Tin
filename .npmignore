@@ -1,0 +1,14 @@
+# Ignore TypeScript source files
+bin/
+*.ts
+*.map
+tsconfig.json
+
+# Ignore build junk
+node_modules/
+dist/**/*.map
+
+# Ignore development files
+.vscode/
+.DS_Store
+.env

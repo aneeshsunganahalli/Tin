@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "rootDir": ".",            // 👈 important
+    "outDir": "dist",          // compiled files go here
     "esModuleInterop": true,
-    "outDir": "dist",
-    "rootDir": ".",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["bin/**/*"]      // 👈 only compile CLI source files
 }

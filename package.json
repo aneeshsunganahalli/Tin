@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
@@ -19,5 +20,7 @@
     "@types/node": "^24.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
-  }
-}
+  },
+  "bin": {
+  "tin": "dist/bin/index.js"
+}}
