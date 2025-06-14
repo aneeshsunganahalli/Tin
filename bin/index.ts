@@ -2,16 +2,18 @@
 
 import { Command } from 'commander';
 import inquirer from 'inquirer';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { execSync } from 'child_process';
 
 const program = new Command();
 
+// ESM-compatible __dirname resolution
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// --- CLI definition ---
+
+// CLI definition
 program
   .name('tin')
   .description('Scaffold a TypeScript or JavaScript Express boilerplate')
@@ -23,12 +25,12 @@ program
 const options = program.opts();
 const projectName = program.args[0] || 'my-express-app';
 
-// --- Determine template ---
+// Determine template (from flag or prompt)
 async function chooseTemplate() {
   if (options.ts) return 'ts';
   if (options.js) return 'js';
 
-  const answer = await inquirer.prompt([
+  const { language } = await inquirer.prompt([
     {
       type: 'list',
       name: 'language',
@@ -36,40 +38,38 @@ async function chooseTemplate() {
       choices: ['TypeScript', 'JavaScript'],
     },
   ]);
-  return answer.language === 'TypeScript' ? 'ts' : 'js';
+  return language === 'TypeScript' ? 'ts' : 'js';
 }
 
-// --- Copy template ---
+// Copy template directory
 function copyTemplate(src: string, dest: string) {
-  fs.mkdirSync(dest, { recursive: true });
-
-  for (const file of fs.readdirSync(src)) {
-    if (file === 'node_modules') continue;
-
-    const srcPath = path.join(src, file);
-    const destPath = path.join(dest, file);
-
-    const stat = fs.statSync(srcPath);
-    if (stat.isDirectory()) {
-      copyTemplate(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
+  fs.copySync(src, dest, {
+    filter: (src) => !src.includes('node_modules'),
+  });
 }
 
-// --- Install dependencies ---
+// Install npm dependencies
 function installDependencies(dest: string) {
   console.log('📦 Installing dependencies...');
   try {
     execSync('npm install', { cwd: dest, stdio: 'inherit' });
-    console.log('✅ Done!');
-  } catch (err) {
-    console.error('❌ Failed to install dependencies. Run `npm install` manually.');
+    console.log('✅ Dependencies installed!');
+  } catch {
+    console.error('❌ Failed to install dependencies. Please run `npm install` manually.');
   }
 }
 
-// --- Main ---
+// Update package.json with project name
+function updatePackageJson(dest: string) {
+  const pkgPath = path.join(dest, 'package.json');
+  if (fs.existsSync(pkgPath)) {
+    const pkg = fs.readJsonSync(pkgPath);
+    pkg.name = projectName;
+    fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
+  }
+}
+
+// Main runner
 (async () => {
   const template = await chooseTemplate();
   const templatePath = path.join(__dirname, '..', '..', 'templates', template);
@@ -83,5 +83,10 @@ function installDependencies(dest: string) {
   console.log(`🚀 Creating ${template === 'ts' ? 'TypeScript' : 'JavaScript'} project in "${projectName}"...`);
 
   copyTemplate(templatePath, targetPath);
+  updatePackageJson(targetPath);
   installDependencies(targetPath);
+
+  console.log(`\n✨ Project created! To get started:\n`);
+  console.log(`  cd ${projectName}`);
+  console.log(`  npm run dev   # or npm start\n`);
 })();

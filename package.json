@@ -14,13 +14,16 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
+    "fs-extra": "^11.3.0",
     "inquirer": "^12.6.3"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "bin": {
-  "tin": "dist/bin/index.js"
-}}
+    "tin": "dist/bin/index.js"
+  }
+}

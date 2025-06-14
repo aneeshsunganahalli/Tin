@@ -7,6 +7,8 @@ tsconfig.json
 # Ignore build junk
 node_modules/
 dist/**/*.map
+templates/**/node_modules/
+templates/**/dist/
 
 # Ignore development files
 .vscode/
