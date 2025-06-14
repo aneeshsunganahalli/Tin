@@ -6,26 +6,25 @@ import fs from 'fs-extra';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { execSync } from 'child_process';
+import chalk from 'chalk';
+import ora from 'ora';
 
 const program = new Command();
 
-// ESM-compatible __dirname resolution
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CLI definition
 program
   .name('tin')
   .description('Scaffold a TypeScript or JavaScript Express boilerplate')
-  .option('--ts', 'Create a TypeScript project')
-  .option('--js', 'Create a JavaScript project')
+  .option('--ts', 'Use TypeScript')
+  .option('--js', 'Use JavaScript')
   .argument('[project-name]', 'Name of the project')
-  .parse(process.argv);
+  .parse();
 
 const options = program.opts();
 const projectName = program.args[0] || 'my-express-app';
 
-// Determine template (from flag or prompt)
 async function chooseTemplate() {
   if (options.ts) return 'ts';
   if (options.js) return 'js';
@@ -34,32 +33,32 @@ async function chooseTemplate() {
     {
       type: 'list',
       name: 'language',
-      message: 'Which language do you want to generate with?',
-      choices: ['TypeScript', 'JavaScript'],
+      message: 'Choose a language:',
+      choices: [
+        { name: chalk.blue('TypeScript'), value: 'ts' },
+        { name: chalk.yellow('JavaScript'), value: 'js' },
+      ],
     },
   ]);
-  return language === 'TypeScript' ? 'ts' : 'js';
+  return language;
 }
 
-// Copy template directory
 function copyTemplate(src: string, dest: string) {
   fs.copySync(src, dest, {
     filter: (src) => !src.includes('node_modules'),
   });
 }
 
-// Install npm dependencies
 function installDependencies(dest: string) {
-  console.log('📦 Installing dependencies...');
+  const spinner = ora('Installing dependencies...').start();
   try {
-    execSync('npm install', { cwd: dest, stdio: 'inherit' });
-    console.log('✅ Dependencies installed!');
+    execSync('npm install', { cwd: dest, stdio: 'ignore' });
+    spinner.succeed('Dependencies installed');
   } catch {
-    console.error('❌ Failed to install dependencies. Please run `npm install` manually.');
+    spinner.fail('Failed to install dependencies. Run `npm install` manually.');
   }
 }
 
-// Update package.json with project name
 function updatePackageJson(dest: string) {
   const pkgPath = path.join(dest, 'package.json');
   if (fs.existsSync(pkgPath)) {
@@ -69,24 +68,51 @@ function updatePackageJson(dest: string) {
   }
 }
 
-// Main runner
+function gitInit(dest: string) {
+  const spinner = ora('Initializing Git repository...').start();
+  try {
+    execSync('git --version', { stdio: 'ignore' });
+    execSync('git init', { cwd: dest, stdio: 'ignore' });
+    execSync('git add .', { cwd: dest, stdio: 'ignore' });
+    execSync('git commit -m "Initial commit"', { cwd: dest, stdio: 'ignore' });
+    spinner.succeed('Git repository initialized');
+  } catch {
+    spinner.fail('Failed to initialize Git repository. Run `git init` manually.');
+  }
+}
+
 (async () => {
+  console.log(chalk.bold.cyan('\nTin - Express Scaffold\n'));
+
   const template = await chooseTemplate();
+  const isTS = template === 'ts';
+  const langColor = isTS ? chalk.blue : chalk.yellow;
+
   const templatePath = path.join(__dirname, '..', '..', 'templates', template);
   const targetPath = path.resolve(process.cwd(), projectName);
 
   if (fs.existsSync(targetPath)) {
-    console.error(`❌ Folder "${projectName}" already exists.`);
+    console.log(chalk.red(`✖ Folder "${projectName}" already exists.`));
     process.exit(1);
   }
 
-  console.log(`🚀 Creating ${template === 'ts' ? 'TypeScript' : 'JavaScript'} project in "${projectName}"...`);
+  const spinner = ora(`Creating ${langColor(isTS ? 'TypeScript' : 'JavaScript')} project...`).start();
 
-  copyTemplate(templatePath, targetPath);
-  updatePackageJson(targetPath);
+  try {
+    copyTemplate(templatePath, targetPath);
+    updatePackageJson(targetPath);
+    spinner.succeed(`Created ${langColor(projectName)}`);
+  } catch (e) {
+    spinner.fail('Project creation failed.');
+    console.error(e);
+    process.exit(1);
+  }
+
   installDependencies(targetPath);
+  gitInit(targetPath);
 
-  console.log(`\n✨ Project created! To get started:\n`);
-  console.log(`  cd ${projectName}`);
-  console.log(`  npm run dev   # or npm start\n`);
+  console.log(`\n${chalk.green('✔ Ready!')}\n`);
+  console.log(`Next steps:`);
+  console.log(`  ${chalk.cyan(`cd ${projectName}`)}`);
+  console.log(`  ${chalk.cyan('npm run dev')}\n`);
 })();
