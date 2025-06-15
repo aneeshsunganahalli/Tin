@@ -60,8 +60,21 @@ function updatePackageJson(dest) {
         fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
     }
 }
+function gitInit(dest) {
+    const spinner = ora('Initializing Git repository...').start();
+    try {
+        execSync('git --version', { stdio: 'ignore' });
+        execSync('git init', { cwd: dest, stdio: 'ignore' });
+        execSync('git add .', { cwd: dest, stdio: 'ignore' });
+        execSync('git commit -m "Initial commit"', { cwd: dest, stdio: 'ignore' });
+        spinner.succeed('Git repository initialized');
+    }
+    catch {
+        spinner.fail('Failed to initialize Git repository. Run `git init` manually.');
+    }
+}
 (async () => {
-    console.log(chalk.bold.cyan('\nTin - Express Boilerplate Generator\n'));
+    console.log(chalk.bold.cyan('\nTin - Express Scaffold\n'));
     const template = await chooseTemplate();
     const isTS = template === 'ts';
     const langColor = isTS ? chalk.blue : chalk.yellow;
@@ -83,6 +96,7 @@ function updatePackageJson(dest) {
         process.exit(1);
     }
     installDependencies(targetPath);
+    gitInit(targetPath);
     console.log(`\n${chalk.green('✔ Ready!')}\n`);
     console.log(`Next steps:`);
     console.log(`  ${chalk.cyan(`cd ${projectName}`)}`);
