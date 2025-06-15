@@ -113,17 +113,14 @@ const loginUser = async (req, res) => {
     
     const token = generateToken(user._id);
 
-    
-    res.status(200).json({
+      res.status(200).json({
       success: true,
       message: "Login successful",
       token,
       user: {
         _id: user._id,
         username: user.username,
-        email: user.email,
-        currentStreak: user.currentStreak || 0,
-        longestStreak: user.longestStreak || 0
+        email: user.email
       }
     });
   } catch (error) {

@@ -1,3 +1,4 @@
+// @ts-nocheck - Template file, dependencies will be installed when scaffolded
 import { Request, Response, NextFunction } from 'express';
 
 export default function errorHandler(

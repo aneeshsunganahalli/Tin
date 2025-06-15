@@ -73,6 +73,12 @@ function gitInit(dest) {
         spinner.fail('Failed to initialize Git repository. Run `git init` manually.');
     }
 }
+function createEnvFile(targetDir) {
+    const envContent = `MONGO=mongodb://localhost:27017/myapp\nPORT=5000\n`;
+    const envPath = path.join(targetDir, '.env');
+    fs.writeFileSync(envPath, envContent, 'utf-8');
+    console.log('✅ .env file created with MONGO and PORT variables');
+}
 (async () => {
     console.log(chalk.bold.cyan('\nTin - Express Scaffold\n'));
     const template = await chooseTemplate();
@@ -97,6 +103,7 @@ function gitInit(dest) {
     }
     installDependencies(targetPath);
     gitInit(targetPath);
+    createEnvFile(targetPath);
     console.log(`\n${chalk.green('✔ Ready!')}\n`);
     console.log(`Next steps:`);
     console.log(`  ${chalk.cyan(`cd ${projectName}`)}`);

@@ -1,22 +1,39 @@
 {
   "name": "express-app-js",
   "version": "1.0.0",
+  "description": "Express.js JavaScript authentication API template",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "express",
+    "javascript",
+    "authentication",
+    "jwt",
+    "mongodb",
+    "mongoose",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^4.18.4",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.15.2",
-    "validator": "^13.15.15"
+    "mongoose": "^8.0.0",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
