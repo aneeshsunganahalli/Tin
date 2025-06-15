@@ -8,6 +8,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import chalk from 'chalk';
 import ora from 'ora';
+import { create } from 'domain';
 
 const program = new Command();
 
@@ -81,6 +82,16 @@ function gitInit(dest: string) {
   }
 }
 
+function createEnvFile(targetDir: string) {
+  const envContent = `MONGO=mongodb://localhost:27017/myapp\nPORT=5000\n`;
+
+  const envPath = path.join(targetDir, '.env');
+
+  fs.writeFileSync(envPath, envContent, 'utf-8');
+
+  console.log('✅ .env file created with MONGO and PORT variables');
+}
+
 (async () => {
   console.log(chalk.bold.cyan('\nTin - Express Scaffold\n'));
 
@@ -110,6 +121,7 @@ function gitInit(dest: string) {
 
   installDependencies(targetPath);
   gitInit(targetPath);
+  createEnvFile(targetPath);
 
   console.log(`\n${chalk.green('✔ Ready!')}\n`);
   console.log(`Next steps:`);
