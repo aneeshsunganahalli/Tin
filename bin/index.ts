@@ -35,18 +35,18 @@ async function chooseTemplate(): Promise<{ language: string; initGit: boolean }>
     answers.language = 'ts';
   } else if (options.js) {
     answers.language = 'js';
-  } else {    const { language } = await inquirer.prompt([
+  } else {
+    const { language } = await inquirer.prompt([
       {
         type: 'list',
         name: 'language',
-        message: chalk.bold('Choose a language:'),
-        choices: [
+        message: chalk.bold('Choose a language:'),        choices: [
           { 
-            name: `${chalk.blue('●')} ${chalk.bold('TypeScript')} ${chalk.gray('- Type-safe JavaScript')}`, 
+            name: `${chalk.blue('●')} ${chalk.blue.bold('TypeScript')} ${chalk.gray('- Type-safe JavaScript')}`, 
             value: 'ts' 
           },
           { 
-            name: `${chalk.yellow('●')} ${chalk.bold('JavaScript')} ${chalk.gray('- Classic JavaScript')}`, 
+            name: `${chalk.yellow('●')} ${chalk.yellow.bold('JavaScript')} ${chalk.gray('- Classic JavaScript')}`, 
             value: 'js' 
           },
         ],
@@ -60,7 +60,8 @@ async function chooseTemplate(): Promise<{ language: string; initGit: boolean }>
     answers.initGit = true;
   } else if (options.skipGit) {
     answers.initGit = false;
-  } else {    const { initGit } = await inquirer.prompt([
+  } else {
+    const { initGit } = await inquirer.prompt([
       {
         type: 'list',
         name: 'initGit',
@@ -91,16 +92,6 @@ function copyTemplate(src: string, dest: string) {
   fs.copySync(src, dest, {
     filter: (src) => !src.includes('node_modules'),
   });
-}
-
-function installDependencies(dest: string) {
-  const spinner = ora('Installing dependencies...').start();
-  try {
-    execSync('npm install', { cwd: dest, stdio: 'ignore' });
-    spinner.succeed('Dependencies installed');
-  } catch {
-    spinner.fail('Failed to install dependencies. Run `npm install` manually.');
-  }
 }
 
 // Async dependency installation for parallel execution
@@ -143,84 +134,7 @@ function updatePackageJson(dest: string) {
   }
 }
 
-// Optimized git initialization with better performance
-function gitInitOptimized(dest: string) {
-  const spinner = ora('Initializing Git repository...').start();
-  try {
-    // Skip git version check if we're confident git is installed
-    // Or check git availability by trying to run git command directly
-    
-    // Ultra-fast git init with minimal configuration
-    const gitCommands = [
-      'git init --quiet',  // Suppress output for faster execution
-      'git config user.name "Developer" 2>/dev/null || true',  // Set minimal config, ignore errors
-      'git config user.email "dev@example.com" 2>/dev/null || true',
-      'git add . --all',  // Add all files at once
-      'git commit -m "Initial commit" --quiet --no-verify'  // Skip hooks for speed
-    ].join(' && ');
-    
-    execSync(gitCommands, { 
-      cwd: dest, 
-      stdio: 'ignore',
-      timeout: 8000,  // Reduced timeout
-      env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }  // Disable interactive prompts
-    });
-    
-    spinner.succeed('Git repository initialized');
-  } catch (error) {
-    spinner.fail('Failed to initialize Git repository. Run `git init` manually.');
-  }
-}
-
-// Alternative: Async git initialization (non-blocking)
-async function gitInitAsync(dest: string) {
-  const spinner = ora('Initializing Git repository...').start();
-  
-  return new Promise<void>((resolve) => {
-    // Use spawn for better performance with large repositories
-    const gitInit = spawn('git', ['init', '--quiet'], { 
-      cwd: dest, 
-      stdio: 'ignore',
-      detached: false
-    });
-    
-    gitInit.on('close', (code: number | null) => {
-      if (code === 0) {
-        // Chain the next commands
-        const gitAdd = spawn('git', ['add', '.'], { cwd: dest, stdio: 'ignore' });
-        gitAdd.on('close', (addCode: number | null) => {
-          if (addCode === 0) {
-            const gitCommit = spawn('git', ['commit', '-m', 'Initial commit', '--quiet'], { 
-              cwd: dest, 
-              stdio: 'ignore' 
-            });
-            gitCommit.on('close', (commitCode: number | null) => {
-              if (commitCode === 0) {
-                spinner.succeed('Git repository initialized');
-              } else {
-                spinner.fail('Failed to create initial commit');
-              }
-              resolve();
-            });
-          } else {
-            spinner.fail('Failed to add files to git');
-            resolve();
-          }
-        });
-      } else {
-        spinner.fail('Failed to initialize Git repository');
-        resolve();
-      }
-    });
-    
-    gitInit.on('error', () => {
-      spinner.fail('Git not found. Install Git or run `git init` manually.');
-      resolve();
-    });
-  });
-}
-
-// Super fast git init - only if git is available and needed
+// Ultra-fast git initialization
 async function gitInitFast(dest: string): Promise<void> {
   const spinner = ora('Initializing Git repository...').start();
   
@@ -259,33 +173,16 @@ async function gitInitFast(dest: string): Promise<void> {
 }
 
 function createEnvFile(targetDir: string) {
-  const spinner = ora({
-    text: 'Creating environment configuration...',
-    spinner: 'dots',
-    color: 'green'
-  }).start();
-  
   const envContent = `MONGO=mongodb://localhost:27017/myapp\nPORT=5000\n`;
   const envPath = path.join(targetDir, '.env');
-
-  try {
-    fs.writeFileSync(envPath, envContent, 'utf-8');
-    spinner.succeed(chalk.green('Environment file created'));
-  } catch (error) {
-    spinner.fail(chalk.red('Failed to create .env file'));
-    console.error(error);
-  }
+  fs.writeFileSync(envPath, envContent, 'utf-8');
 }
 
 (async () => {
-  // Clean, modern CLI header
+  // Simple CLI header
   console.log();
-  console.log(chalk.cyan.bold('  ╭─────────────────────────────────╮'));
-  console.log(chalk.cyan.bold('  │                                 │'));
-  console.log(chalk.cyan.bold('  │  ') + chalk.white.bold('🔧 Tin - Express Scaffold') + chalk.cyan.bold('  │'));
-  console.log(chalk.cyan.bold('  │  ') + chalk.gray('Fast Express.js project setup') + chalk.cyan.bold('   │'));
-  console.log(chalk.cyan.bold('  │                                 │'));
-  console.log(chalk.cyan.bold('  ╰─────────────────────────────────╯'));
+  console.log(chalk.cyan.bold('🔧 Tin - Express Scaffold'));
+  console.log(chalk.gray('Fast Express.js project setup'));
   console.log();
 
   const template = await chooseTemplate();
@@ -339,10 +236,10 @@ function createEnvFile(targetDir: string) {
   // Clean, organized success message
   console.log();
   console.log(chalk.green.bold('  🎉 Project setup completed successfully!'));
-  console.log();
-  console.log(chalk.bold('  📋 Configuration Summary:'));
+  console.log();  console.log(chalk.bold('  📋 Configuration Summary:'));
   console.log(`     Language: ${langColor.bold(isTS ? 'TypeScript' : 'JavaScript')}`);
   console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
+  console.log(`     Database: ${chalk.magenta.bold('MongoDB')} ${chalk.gray('(configurable in .env)')}`);
   console.log(`     Port:     ${chalk.cyan.bold('5000')} ${chalk.gray('(configurable in .env)')}`);
   console.log();
   console.log(chalk.bold('  🚀 Next steps:'));
