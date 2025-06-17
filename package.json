@@ -1,16 +1,17 @@
 {
   "name": "tin",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Scaffold a TypeScript or JavaScript Express boilerplate",
+  "main": "dist/bin/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/bin/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
