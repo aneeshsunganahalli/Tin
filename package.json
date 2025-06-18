@@ -1,5 +1,5 @@
 {
-  "name": "tin",
+  "name": "create-tin-express",
   "version": "1.0.0",
   "description": "Scaffold a TypeScript or JavaScript Express boilerplate",
   "main": "dist/bin/index.js",
@@ -7,11 +7,35 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/bin/index.js"
+    "start": "node dist/bin/index.js",
+    "dev": "tsc && node dist/bin/index.js",
+    "prepublishOnly": "npm run build",
+    "clean": "rimraf dist"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "express",
+    "cli",
+    "scaffold",
+    "typescript",
+    "javascript",
+    "boilerplate",
+    "jwt",
+    "authentication",
+    "mongodb",
+    "create",
+    "generator",
+    "node"
+  ],
+  "author": "Your Name <your.email@example.com>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/create-tin-express.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/create-tin-express/issues"
+  },
+  "homepage": "https://github.com/your-username/create-tin-express#readme",
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
@@ -22,6 +46,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.1",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },

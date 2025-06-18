@@ -1,16 +1,45 @@
-# Ignore TypeScript source files
+# Source files (exclude TypeScript sources, include compiled JS)
 bin/
+src/
 *.ts
+!dist/
 *.map
 tsconfig.json
 
-# Ignore build junk
+# Templates should be included
+!templates/
+
+# Development and build files
 node_modules/
 dist/**/*.map
 templates/**/node_modules/
 templates/**/dist/
 
-# Ignore development files
+# Development files
 .vscode/
+.idea/
 .DS_Store
 .env
+*.log
+npm-debug.log*
+
+# Git files
+.git/
+.gitignore
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
