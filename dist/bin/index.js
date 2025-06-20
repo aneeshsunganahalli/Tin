@@ -161,6 +161,8 @@ async function gitInitFast(dest) {
 function createEnvFile(targetDir) {
     const envContent = `MONGO=mongodb://localhost:27017/myapp\nPORT=5000\n`;
     const envPath = path.join(targetDir, '.env');
+    // Ensure the target directory exists
+    fs.ensureDirSync(targetDir);
     fs.writeFileSync(envPath, envContent, 'utf-8');
 }
 (async () => {
@@ -190,6 +192,7 @@ function createEnvFile(targetDir) {
     try {
         copyTemplate(templatePath, targetPath);
         updatePackageJson(targetPath);
+        createEnvFile(targetPath); // Create .env file immediately after copying template
         spinner.succeed(chalk.green.bold(`✨ Created ${langColor.bold(projectName)} project!`));
     }
     catch (e) {
@@ -208,7 +211,6 @@ function createEnvFile(targetDir) {
     }
     // Run dependency installation and git init in parallel for speed
     await Promise.all(tasks);
-    createEnvFile(targetPath);
     // Clean, organized success message
     console.log();
     console.log(chalk.green.bold('  🎉 Project setup completed successfully!'));

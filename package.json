@@ -1,6 +1,6 @@
 {
   "name": "create-tin-express",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scaffold a TypeScript or JavaScript Express boilerplate",
   "main": "dist/bin/index.js",
   "type": "module",
