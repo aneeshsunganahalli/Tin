@@ -89,9 +89,32 @@ async function chooseTemplate(): Promise<{ language: string; initGit: boolean }>
 }
 
 function copyTemplate(src: string, dest: string) {
-  fs.copySync(src, dest, {
-    filter: (src) => !src.includes('node_modules'),
-  });
+  try {
+    // Ensure source exists
+    if (!fs.existsSync(src)) {
+      throw new Error(`Source template directory does not exist: ${src}`);
+    }
+    
+    // Copy all files from template
+    fs.copySync(src, dest, {
+      filter: (src) => {
+        // Skip node_modules but keep everything else
+        return !src.includes('node_modules');
+      },
+      overwrite: true,
+      errorOnExist: false
+    });
+    
+    // Verify the copy was successful by checking if essential files exist
+    const packageJsonPath = path.join(dest, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+      throw new Error(`Template copy failed - package.json not found in ${dest}`);
+    }
+    
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to copy template: ${errorMessage}`);
+  }
 }
 
 // Async dependency installation for parallel execution
@@ -195,8 +218,26 @@ function createEnvFile(targetDir: string) {
   const langColor = isTS ? chalk.blue : chalk.yellow;
 
   console.log(); // Add spacing before project creation
-
-  const templatePath = path.join(__dirname, '..', '..', 'templates', template.language);
+  
+  // Try multiple possible template paths to handle different installation scenarios
+  let templatePath = path.join(__dirname, '..', 'templates', template.language);
+  
+  // If templates not found in expected location, try alternative paths
+  if (!fs.existsSync(templatePath)) {
+    const alternativePaths = [
+      path.join(__dirname, '..', '..', 'templates', template.language), // Original path
+      path.join(__dirname, 'templates', template.language), // Same directory
+      path.join(process.cwd(), 'node_modules', 'create-tin-express', 'dist', 'templates', template.language), // Global install
+    ];
+    
+    for (const altPath of alternativePaths) {
+      if (fs.existsSync(altPath)) {
+        templatePath = altPath;
+        break;
+      }
+    }
+  }
+  
   const targetPath = path.resolve(process.cwd(), projectName);
 
   if (fs.existsSync(targetPath)) {
@@ -211,13 +252,24 @@ function createEnvFile(targetDir: string) {
     color: isTS ? 'blue' : 'yellow'
   }).start();
   try {
+    // Debug: Check if template path exists
+    if (!fs.existsSync(templatePath)) {
+      spinner.fail(chalk.red.bold('Template not found!'));
+      console.error(`Template path does not exist: ${templatePath}`);
+      console.error(`Current directory: ${__dirname}`);
+      console.error(`Looking for templates in: ${path.join(__dirname, '..', 'templates')}`);
+      process.exit(1);
+    }
+    
     copyTemplate(templatePath, targetPath);
     updatePackageJson(targetPath);
     createEnvFile(targetPath); // Create .env file immediately after copying template
     spinner.succeed(chalk.green.bold(`✨ Created ${langColor.bold(projectName)} project!`));
   } catch (e) {
     spinner.fail(chalk.red.bold('Project creation failed.'));
-    console.error(e);
+    console.error('Error details:', e);
+    console.error(`Template path: ${templatePath}`);
+    console.error(`Target path: ${targetPath}`);
     process.exit(1);
   }
 

@@ -1,12 +1,13 @@
 {
   "name": "create-tin-express",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Scaffold a TypeScript or JavaScript Express boilerplate",
   "main": "dist/bin/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "npm run clean && tsc && npm run copy-templates",
+    "copy-templates": "node -e \"require('fs-extra').copySync('templates', 'dist/templates')\"",
     "start": "node dist/bin/index.js",
     "dev": "tsc && node dist/bin/index.js",
     "prepublishOnly": "npm run build",
@@ -52,5 +53,8 @@
   },
   "bin": {
     "tin": "dist/bin/index.js"
-  }
+  },
+  "files": [
+    "dist/"
+  ]
 }

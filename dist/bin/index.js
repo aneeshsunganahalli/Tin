@@ -176,7 +176,7 @@ function createEnvFile(targetDir) {
     const initGit = template.initGit;
     const langColor = isTS ? chalk.blue : chalk.yellow;
     console.log(); // Add spacing before project creation
-    const templatePath = path.join(__dirname, '..', '..', 'templates', template.language);
+    const templatePath = path.join(__dirname, '..', 'templates', template.language);
     const targetPath = path.resolve(process.cwd(), projectName);
     if (fs.existsSync(targetPath)) {
         console.log();
