@@ -6,6 +6,9 @@ src/
 *.map
 tsconfig.json
 
+# Scripts should be included
+!scripts/
+
 # Templates should be included
 !templates/
 

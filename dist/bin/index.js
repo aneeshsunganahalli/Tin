@@ -83,9 +83,30 @@ async function chooseTemplate() {
     };
 }
 function copyTemplate(src, dest) {
-    fs.copySync(src, dest, {
-        filter: (src) => !src.includes('node_modules'),
-    });
+    try {
+        // Ensure source exists
+        if (!fs.existsSync(src)) {
+            throw new Error(`Source template directory does not exist: ${src}`);
+        }
+        // Copy all files from template
+        fs.copySync(src, dest, {
+            filter: (src) => {
+                // Skip node_modules but keep everything else
+                return !src.includes('node_modules');
+            },
+            overwrite: true,
+            errorOnExist: false
+        });
+        // Verify the copy was successful by checking if essential files exist
+        const packageJsonPath = path.join(dest, 'package.json');
+        if (!fs.existsSync(packageJsonPath)) {
+            throw new Error(`Template copy failed - package.json not found in ${dest}`);
+        }
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to copy template: ${errorMessage}`);
+    }
 }
 // Async dependency installation for parallel execution
 async function installDependenciesAsync(dest) {
@@ -95,7 +116,9 @@ async function installDependenciesAsync(dest) {
         color: 'cyan'
     }).start();
     return new Promise((resolve) => {
-        const npmInstall = spawn('npm', ['install'], {
+        // Use cross-platform npm command
+        const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        const npmInstall = spawn(npmCommand, ['install'], {
             cwd: dest,
             stdio: 'ignore',
             shell: true // Important for Windows compatibility
@@ -134,18 +157,19 @@ async function gitInitFast(dest) {
                 resolve();
                 return;
             }
-            // Fast single command execution
-            execSync('git init --quiet && git add . && git commit -m "Initial commit" --quiet --no-verify', {
+            // Fast single command execution with better cross-platform support
+            execSync('git init && git add . && git commit -m "Initial commit"', {
                 cwd: dest,
                 stdio: 'ignore',
-                timeout: 5000,
+                timeout: 10000, // Increased timeout for slower systems
                 env: {
                     ...process.env,
+                    // Remove potentially problematic environment variables
                     GIT_TERMINAL_PROMPT: '0',
-                    GIT_AUTHOR_NAME: 'Developer',
-                    GIT_AUTHOR_EMAIL: 'dev@example.com',
-                    GIT_COMMITTER_NAME: 'Developer',
-                    GIT_COMMITTER_EMAIL: 'dev@example.com'
+                    GIT_AUTHOR_NAME: process.env.GIT_AUTHOR_NAME || 'Developer',
+                    GIT_AUTHOR_EMAIL: process.env.GIT_AUTHOR_EMAIL || 'dev@example.com',
+                    GIT_COMMITTER_NAME: process.env.GIT_COMMITTER_NAME || 'Developer',
+                    GIT_COMMITTER_EMAIL: process.env.GIT_COMMITTER_EMAIL || 'dev@example.com'
                 }
             });
             spinner.succeed('Git repository initialized');
@@ -176,7 +200,29 @@ function createEnvFile(targetDir) {
     const initGit = template.initGit;
     const langColor = isTS ? chalk.blue : chalk.yellow;
     console.log(); // Add spacing before project creation
-    const templatePath = path.join(__dirname, '..', 'templates', template.language);
+    // Try multiple possible template paths to handle different installation scenarios
+    const templatePaths = [
+        path.join(__dirname, '..', 'templates', template.language), // Standard build structure
+        path.join(__dirname, '..', '..', 'templates', template.language), // npm global install
+        path.join(__dirname, 'templates', template.language), // Same directory
+        path.join(process.cwd(), 'node_modules', 'create-tin-express', 'dist', 'templates', template.language), // Local install
+        path.join(process.cwd(), 'node_modules', 'create-tin-express', 'templates', template.language), // Alternative structure
+    ];
+    let templatePath = null;
+    for (const possiblePath of templatePaths) {
+        if (fs.existsSync(possiblePath)) {
+            templatePath = possiblePath;
+            break;
+        }
+    }
+    if (!templatePath) {
+        console.log();
+        console.log(chalk.red.bold('  ✖ Error: ') + chalk.red('Template not found!'));
+        console.log(chalk.gray('    Searched paths:'));
+        templatePaths.forEach(p => console.log(chalk.gray(`      - ${p}`)));
+        console.log();
+        process.exit(1);
+    }
     const targetPath = path.resolve(process.cwd(), projectName);
     if (fs.existsSync(targetPath)) {
         console.log();
@@ -197,7 +243,9 @@ function createEnvFile(targetDir) {
     }
     catch (e) {
         spinner.fail(chalk.red.bold('Project creation failed.'));
-        console.error(e);
+        console.error('Error details:', e);
+        console.error(`Template path: ${templatePath}`);
+        console.error(`Target path: ${targetPath}`);
         process.exit(1);
     }
     console.log(); // Add spacing

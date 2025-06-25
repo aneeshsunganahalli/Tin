@@ -126,7 +126,10 @@ async function installDependenciesAsync(dest: string): Promise<void> {
   }).start();
   
   return new Promise((resolve) => {
-    const npmInstall = spawn('npm', ['install'], {
+    // Use cross-platform npm command
+    const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    
+    const npmInstall = spawn(npmCommand, ['install'], {
       cwd: dest,
       stdio: 'ignore',
       shell: true // Important for Windows compatibility
@@ -170,18 +173,19 @@ async function gitInitFast(dest: string): Promise<void> {
         return;
       }
       
-      // Fast single command execution
-      execSync('git init --quiet && git add . && git commit -m "Initial commit" --quiet --no-verify', { 
+      // Fast single command execution with better cross-platform support
+      execSync('git init && git add . && git commit -m "Initial commit"', { 
         cwd: dest, 
         stdio: 'ignore',
-        timeout: 5000,
+        timeout: 10000, // Increased timeout for slower systems
         env: { 
-          ...process.env, 
+          ...process.env,
+          // Remove potentially problematic environment variables
           GIT_TERMINAL_PROMPT: '0',
-          GIT_AUTHOR_NAME: 'Developer',
-          GIT_AUTHOR_EMAIL: 'dev@example.com',
-          GIT_COMMITTER_NAME: 'Developer', 
-          GIT_COMMITTER_EMAIL: 'dev@example.com'
+          GIT_AUTHOR_NAME: process.env.GIT_AUTHOR_NAME || 'Developer',
+          GIT_AUTHOR_EMAIL: process.env.GIT_AUTHOR_EMAIL || 'dev@example.com',
+          GIT_COMMITTER_NAME: process.env.GIT_COMMITTER_NAME || 'Developer', 
+          GIT_COMMITTER_EMAIL: process.env.GIT_COMMITTER_EMAIL || 'dev@example.com'
         }
       });
       
@@ -220,22 +224,30 @@ function createEnvFile(targetDir: string) {
   console.log(); // Add spacing before project creation
   
   // Try multiple possible template paths to handle different installation scenarios
-  let templatePath = path.join(__dirname, '..', 'templates', template.language);
+  const templatePaths = [
+    path.join(__dirname, '..', 'templates', template.language), // Standard build structure
+    path.join(__dirname, '..', '..', 'templates', template.language), // npm global install
+    path.join(__dirname, 'templates', template.language), // Same directory
+    path.join(process.cwd(), 'node_modules', 'create-tin-express', 'dist', 'templates', template.language), // Local install
+    path.join(process.cwd(), 'node_modules', 'create-tin-express', 'templates', template.language), // Alternative structure
+  ];
   
-  // If templates not found in expected location, try alternative paths
-  if (!fs.existsSync(templatePath)) {
-    const alternativePaths = [
-      path.join(__dirname, '..', '..', 'templates', template.language), // Original path
-      path.join(__dirname, 'templates', template.language), // Same directory
-      path.join(process.cwd(), 'node_modules', 'create-tin-express', 'dist', 'templates', template.language), // Global install
-    ];
-    
-    for (const altPath of alternativePaths) {
-      if (fs.existsSync(altPath)) {
-        templatePath = altPath;
-        break;
-      }
+  let templatePath: string | null = null;
+  
+  for (const possiblePath of templatePaths) {
+    if (fs.existsSync(possiblePath)) {
+      templatePath = possiblePath;
+      break;
     }
+  }
+  
+  if (!templatePath) {
+    console.log();
+    console.log(chalk.red.bold('  ✖ Error: ') + chalk.red('Template not found!'));
+    console.log(chalk.gray('    Searched paths:'));
+    templatePaths.forEach(p => console.log(chalk.gray(`      - ${p}`)));
+    console.log();
+    process.exit(1);
   }
   
   const targetPath = path.resolve(process.cwd(), projectName);
@@ -252,15 +264,6 @@ function createEnvFile(targetDir: string) {
     color: isTS ? 'blue' : 'yellow'
   }).start();
   try {
-    // Debug: Check if template path exists
-    if (!fs.existsSync(templatePath)) {
-      spinner.fail(chalk.red.bold('Template not found!'));
-      console.error(`Template path does not exist: ${templatePath}`);
-      console.error(`Current directory: ${__dirname}`);
-      console.error(`Looking for templates in: ${path.join(__dirname, '..', 'templates')}`);
-      process.exit(1);
-    }
-    
     copyTemplate(templatePath, targetPath);
     updatePackageJson(targetPath);
     createEnvFile(targetPath); // Create .env file immediately after copying template
