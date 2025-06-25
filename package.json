@@ -1,5 +1,5 @@
 {
-  "name": "create-tin-express",
+  "name": "create-tin",
   "version": "1.1.0",
   "description": "Scaffold a TypeScript or JavaScript Express boilerplate",
   "main": "dist/bin/index.js",
@@ -35,12 +35,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/create-tin-express.git"
+    "url": "https://github.com/your-username/create-tin.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/create-tin-express/issues"
+    "url": "https://github.com/your-username/create-tin/issues"
   },
-  "homepage": "https://github.com/your-username/create-tin-express#readme",
+  "homepage": "https://github.com/your-username/create-tin#readme",
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
@@ -56,7 +56,7 @@
     "typescript": "^5.8.3"
   },
   "bin": {
-    "tin": "dist/bin/index.js"
+    "create-tin": "dist/bin/index.js"
   },
   "files": [
     "dist/",

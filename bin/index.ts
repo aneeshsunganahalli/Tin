@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 program
-  .name('tin')
+  .name('create-tin')
   .description('Scaffold a TypeScript or JavaScript Express boilerplate')
   .option('--ts', 'Use TypeScript')
   .option('--js', 'Use JavaScript')
@@ -212,7 +212,7 @@ function createEnvFile(targetDir: string) {
 (async () => {
   // Simple CLI header
   console.log();
-  console.log(chalk.cyan.bold('🔧 Tin - Express Scaffold'));
+  console.log(chalk.cyan.bold('🔧 Create Tin - Express Scaffold'));
   console.log(chalk.gray('Fast Express.js project setup'));
   console.log();
 
@@ -228,8 +228,8 @@ function createEnvFile(targetDir: string) {
     path.join(__dirname, '..', 'templates', template.language), // Standard build structure
     path.join(__dirname, '..', '..', 'templates', template.language), // npm global install
     path.join(__dirname, 'templates', template.language), // Same directory
-    path.join(process.cwd(), 'node_modules', 'create-tin-express', 'dist', 'templates', template.language), // Local install
-    path.join(process.cwd(), 'node_modules', 'create-tin-express', 'templates', template.language), // Alternative structure
+    path.join(process.cwd(), 'node_modules', 'create-tin', 'dist', 'templates', template.language), // Local install
+    path.join(process.cwd(), 'node_modules', 'create-tin', 'templates', template.language), // Alternative structure
   ];
   
   let templatePath: string | null = null;
@@ -304,5 +304,7 @@ function createEnvFile(targetDir: string) {
   console.log(chalk.cyan('     npm run dev'));
   console.log();
   console.log(chalk.gray('  Happy coding! 🎯'));
+  console.log();
+  console.log(chalk.gray('  📝 Usage: npx create-tin <project-name>'));
   console.log();
 })();
