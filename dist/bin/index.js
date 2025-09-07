@@ -88,19 +88,27 @@ function copyTemplate(src, dest) {
         if (!fs.existsSync(src)) {
             throw new Error(`Source template directory does not exist: ${src}`);
         }
-        // Copy all files from template
+        // Check source contents before copying
+        const sourceContents = fs.readdirSync(src);
+        if (sourceContents.length === 0) {
+            throw new Error(`Source template directory is empty: ${src}`);
+        }
+        // Ensure destination directory exists
+        fs.ensureDirSync(dest);
+        // Copy all files from template - simplified approach
         fs.copySync(src, dest, {
-            filter: (src) => {
-                // Skip node_modules but keep everything else
-                return !src.includes('node_modules');
-            },
             overwrite: true,
             errorOnExist: false
         });
+        // Check if destination has any files after copy
+        const destContents = fs.readdirSync(dest);
+        if (destContents.length === 0) {
+            throw new Error(`Copy operation failed - destination directory is empty after copy. Source had: ${sourceContents.join(', ')}`);
+        }
         // Verify the copy was successful by checking if essential files exist
         const packageJsonPath = path.join(dest, 'package.json');
         if (!fs.existsSync(packageJsonPath)) {
-            throw new Error(`Template copy failed - package.json not found in ${dest}`);
+            throw new Error(`Template copy failed - package.json not found in ${dest}. Destination contains: ${destContents.join(', ')}`);
         }
     }
     catch (error) {
@@ -202,9 +210,11 @@ function createEnvFile(targetDir) {
     console.log(); // Add spacing before project creation
     // Try multiple possible template paths to handle different installation scenarios
     const templatePaths = [
-        path.join(__dirname, '..', 'templates', template.language), // Standard build structure
-        path.join(__dirname, '..', '..', 'templates', template.language), // npm global install
+        path.join(__dirname, '..', 'templates', template.language), // Standard build structure (dist/bin -> dist/templates)
+        path.join(__dirname, '..', '..', 'templates', template.language), // Development mode
         path.join(__dirname, 'templates', template.language), // Same directory
+        // NPX specific paths
+        path.resolve(__dirname, '..', 'templates', template.language), // Absolute path for npx
         path.join(process.cwd(), 'node_modules', 'create-tin', 'dist', 'templates', template.language), // Local install
         path.join(process.cwd(), 'node_modules', 'create-tin', 'templates', template.language), // Alternative structure
     ];
