@@ -1,9 +1,8 @@
 // Main types export file
 // This file re-exports all types for easier importing
 
-export * from './index';
-export * from './utils';
-export * from './constants';
+export * from './index.js';
+export * from './constants.js';
 
 // Type guards for runtime type checking
 export const isValidEmail = (email: string): boolean => {
