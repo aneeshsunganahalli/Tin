@@ -11,7 +11,7 @@ export function updatePackageJson(dest: string, projectName: string): void {
 }
 
 export function createEnvFile(targetDir: string): void {
-  const envContent = `MONGO=mongodb://localhost:27017/myapp\nPORT=5000\n`;
+  const envContent = `MONGO=\nPORT=3000\n`;
   const envPath = path.join(targetDir, '.env');
   
   // Ensure the target directory exists

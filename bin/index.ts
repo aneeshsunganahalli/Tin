@@ -5,17 +5,10 @@ import path from 'path';
 import { createProgram, getProgramOptions } from './src/cli/program.js';
 import { chooseTemplate } from './src/cli/prompts.js';
 import { createProject } from './src/app.js';
-import chalk from 'chalk';
+import { displayHeader } from './src/utils/displayUtils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-function displayHeader(): void {
-  console.log();
-  console.log(chalk.cyan.bold('🔧 Create Tin - Express Scaffold'));
-  console.log(chalk.gray('Fast Express.js project setup'));
-  console.log();
-}
 
 (async () => {
   displayHeader();

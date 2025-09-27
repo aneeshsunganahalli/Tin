@@ -21,8 +21,8 @@ export function displaySuccessMessage(
   console.log(chalk.bold('  📋 Configuration Summary:'));
   console.log(`     Language: ${langColor.bold(isTS ? 'TypeScript' : 'JavaScript')}`);
   console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
-  console.log(`     Database: ${chalk.magenta.bold('MongoDB')} ${chalk.gray('(configurable in .env)')}`);
-  console.log(`     Port:     ${chalk.cyan.bold('5000')} ${chalk.gray('(configurable in .env)')}`);
+  console.log(`     Database: ${chalk.magenta.bold('MONGO')} ${chalk.gray('(configurable in .env)')}`);
+  console.log(`     Port:     ${chalk.cyan.bold('3000')} ${chalk.gray('(configurable in .env)')}`);
   console.log();
   console.log(chalk.bold('  🚀 Next steps:'));
   console.log(chalk.cyan(`     cd ${projectName}`));

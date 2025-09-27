@@ -4,6 +4,8 @@ import ora from 'ora';
 import fs from 'fs-extra';
 import { spawn, execSync } from 'child_process';
 import { TemplateOptions } from './cli/prompts.js';
+import { displaySuccessMessage } from './utils/displayUtils.js';
+import { checkProjectExists, createEnvFile, updatePackageJson } from './utils/fileUtils.js';
 
 function findTemplatePath(templateLanguage: string, __dirname: string): string {
   // Try multiple possible template paths to handle different installation scenarios
@@ -76,34 +78,6 @@ function copyTemplate(src: string, dest: string): void {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to copy template: ${errorMessage}`);
-  }
-}
-
-function updatePackageJson(dest: string, projectName: string): void {
-  const pkgPath = path.join(dest, 'package.json');
-  if (fs.existsSync(pkgPath)) {
-    const pkg = fs.readJsonSync(pkgPath);
-    pkg.name = projectName;
-    fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
-  }
-}
-
-function createEnvFile(targetDir: string): void {
-  const envContent = `MONGO=mongodb://localhost:27017/myapp\nPORT=5000\n`;
-  const envPath = path.join(targetDir, '.env');
-  
-  // Ensure the target directory exists
-  fs.ensureDirSync(targetDir);
-  
-  fs.writeFileSync(envPath, envContent, 'utf-8');
-}
-
-function checkProjectExists(targetPath: string, projectName: string): void {
-  if (fs.existsSync(targetPath)) {
-    console.log();
-    console.log(chalk.red.bold('  ✖ Error: ') + chalk.red(`Folder "${projectName}" already exists.`));
-    console.log();
-    process.exit(1);
   }
 }
 
@@ -180,32 +154,7 @@ async function gitInitFast(dest: string): Promise<void> {
   });
 }
 
-function displaySuccessMessage(
-  projectName: string, 
-  isTS: boolean, 
-  initGit: boolean
-): void {
-  const langColor = isTS ? chalk.blue : chalk.yellow;
-  
-  // Clean, organized success message
-  console.log();
-  console.log(chalk.green.bold('  🎉 Project setup completed successfully!'));
-  console.log();
-  console.log(chalk.bold('  📋 Configuration Summary:'));
-  console.log(`     Language: ${langColor.bold(isTS ? 'TypeScript' : 'JavaScript')}`);
-  console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
-  console.log(`     Database: ${chalk.magenta.bold('MongoDB')} ${chalk.gray('(configurable in .env)')}`);
-  console.log(`     Port:     ${chalk.cyan.bold('5000')} ${chalk.gray('(configurable in .env)')}`);
-  console.log();
-  console.log(chalk.bold('  🚀 Next steps:'));
-  console.log(chalk.cyan(`     cd ${projectName}`));
-  console.log(chalk.cyan('     npm run dev'));
-  console.log();
-  console.log(chalk.gray('  Happy coding! 🎯'));
-  console.log();
-  console.log(chalk.gray('  📝 Usage: npx create-tin <project-name>'));
-  console.log();
-}
+// Function has been moved to displayUtils.ts
 
 export async function createProject(
   template: TemplateOptions,
