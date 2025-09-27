@@ -8,15 +8,13 @@ const connectDB = async () => {
 
   try {
     const conn = await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // optional: fail fast if DB is unreachable
+      serverSelectionTimeoutMS: 5000, // fail fast if unreachable
     });
 
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);
   } catch (err) {
     console.error(`❌ MongoDB connection failed: ${err.message}`);
-    process.exit(1); // Exit process with failure
+    process.exit(1);
   }
 };
 
