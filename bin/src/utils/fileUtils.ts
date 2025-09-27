@@ -29,3 +29,67 @@ export function checkProjectExists(targetPath: string, projectName: string): voi
     process.exit(1);
   }
 }
+
+export function createGitIgnore(targetDir: string): void {
+  const gitIgnoreContent = `
+  # Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# IDE / Editor settings
+.idea/
+.vscode/
+*.sublime-*
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+*.bak
+*.tmp
+
+  `;
+  const gitIgnorePath = path.join(targetDir, '.env');
+  
+  // Ensure the target directory exists
+  fs.ensureDirSync(targetDir);
+  
+  fs.writeFileSync(gitIgnorePath, gitIgnoreContent, 'utf-8');
+}

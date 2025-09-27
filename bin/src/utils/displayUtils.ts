@@ -11,7 +11,8 @@ export function displaySuccessMessage(
   projectName: string, 
   isTS: boolean, 
   initGit: boolean,
-  port: number = 3000
+  port: number = 3000,
+  docker: boolean = false
 ): void {
   const langColor = isTS ? chalk.blue : chalk.yellow;
   
@@ -22,6 +23,7 @@ export function displaySuccessMessage(
   console.log(chalk.bold('  📋 Configuration Summary:'));
   console.log(`     Language: ${langColor.bold(isTS ? 'TypeScript' : 'JavaScript')}`);
   console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
+  console.log(`     Docker:   ${docker ? chalk.green.bold('✓ Configured') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Database: ${chalk.magenta.bold('MONGODB_URI')} ${chalk.gray('(configurable in .env)')}`);
   console.log(`     Port:     ${chalk.cyan.bold(port)} ${chalk.gray('(configurable in .env)')}`);
   console.log();
@@ -30,7 +32,4 @@ export function displaySuccessMessage(
   console.log(chalk.cyan('     npm run dev'));
   console.log();
   console.log(chalk.gray('  Happy coding! 🎯'));
-  console.log();
-  console.log(chalk.gray('  📝 Usage: npx create-tin <project-name>'));
-  console.log();
 }

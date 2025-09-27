@@ -5,7 +5,8 @@ import fs from 'fs-extra';
 import { spawn, execSync } from 'child_process';
 import { TemplateOptions } from './cli/prompts.js';
 import { displaySuccessMessage } from './utils/displayUtils.js';
-import { checkProjectExists, createEnvFile, updatePackageJson } from './utils/fileUtils.js';
+import { checkProjectExists, createEnvFile, createGitIgnore, updatePackageJson } from './utils/fileUtils.js';
+import { createDockerFiles } from './utils/dockerUtils.js';
 
 function findTemplatePath(templateLanguage: string, __dirname: string): string {
   // Try multiple possible template paths to handle different installation scenarios
@@ -182,6 +183,12 @@ export async function createProject(
     copyTemplate(templatePath, targetPath);
     updatePackageJson(targetPath, projectName);
     createEnvFile(targetPath, template.port); // Create .env file with user-specified port
+    createGitIgnore(targetPath)
+    
+    // Add Docker files if selected
+    if (template.docker) {
+      createDockerFiles(targetPath, isTS, template.port);
+    }
     spinner.succeed(chalk.green.bold(`✨ Created ${langColor.bold(projectName)} project!`));
   } catch (e) {
     spinner.fail(chalk.red.bold('Project creation failed.'));
@@ -206,5 +213,5 @@ export async function createProject(
   // Run dependency installation and git init in parallel for speed
   await Promise.all(tasks);
 
-  displaySuccessMessage(projectName, isTS, initGit, template.port);
+  displaySuccessMessage(projectName, isTS, initGit, template.port, template.docker);
 }

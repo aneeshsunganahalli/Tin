@@ -5,10 +5,11 @@ export interface TemplateOptions {
   language: string;
   initGit: boolean;
   port: number;
+  docker: boolean;
 }
 
 export async function chooseTemplate(options: any): Promise<TemplateOptions> {
-  const answers: { language?: string; initGit?: boolean; port?: number } = {};
+  const answers: { language?: string; initGit?: boolean; port?: number; docker?: boolean } = {};
   
   // Language selection
   if (options.ts) {
@@ -85,9 +86,35 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     answers.port = portResponse.port;
   }
 
+  // Docker setup selection
+  if (options.docker) {
+    answers.docker = true;
+  } else if (options.skipDocker) {
+    answers.docker = false;
+  } else {
+    const { docker } = await inquirer.prompt([{
+      type: 'list',
+      name: 'docker',
+      message: chalk.bold('Include Docker configuration?'),
+      choices: [
+        { 
+          name: `${chalk.green('✓')} ${chalk.bold('Yes')} ${chalk.gray('- Include Dockerfile and docker-compose.yml')}`, 
+          value: true 
+        },
+        { 
+          name: `${chalk.red('✗')} ${chalk.bold('No')} ${chalk.gray('- Skip Docker setup')}`, 
+          value: false 
+        },
+      ],
+      default: 0
+    } as any]);
+    answers.docker = docker;
+  }
+
   return {
     language: answers.language!,
     initGit: answers.initGit!,
-    port: answers.port!
+    port: answers.port!,
+    docker: answers.docker!
   };
 }
