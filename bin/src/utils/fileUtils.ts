@@ -10,8 +10,8 @@ export function updatePackageJson(dest: string, projectName: string): void {
   }
 }
 
-export function createEnvFile(targetDir: string): void {
-  const envContent = `MONGO=\nPORT=3000\n`;
+export function createEnvFile(targetDir: string, port: number = 3000): void {
+  const envContent = `MONGODB_URI=\nPORT=${port}\n`;
   const envPath = path.join(targetDir, '.env');
   
   // Ensure the target directory exists

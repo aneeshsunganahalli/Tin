@@ -10,6 +10,7 @@ export function createProgram(): Command {
     .option('--js', 'Use JavaScript')
     .option('--skip-git', 'Skip Git repository initialization')
     .option('--git', 'Initialize Git repository')
+    .option('--port <number>', 'Specify the port number (default: 3000)')
     .argument('[project-name]', 'Name of the project')
     .parse();
 

@@ -181,7 +181,7 @@ export async function createProject(
   try {
     copyTemplate(templatePath, targetPath);
     updatePackageJson(targetPath, projectName);
-    createEnvFile(targetPath); // Create .env file immediately after copying template
+    createEnvFile(targetPath, template.port); // Create .env file with user-specified port
     spinner.succeed(chalk.green.bold(`✨ Created ${langColor.bold(projectName)} project!`));
   } catch (e) {
     spinner.fail(chalk.red.bold('Project creation failed.'));
@@ -206,5 +206,5 @@ export async function createProject(
   // Run dependency installation and git init in parallel for speed
   await Promise.all(tasks);
 
-  displaySuccessMessage(projectName, isTS, initGit);
+  displaySuccessMessage(projectName, isTS, initGit, template.port);
 }

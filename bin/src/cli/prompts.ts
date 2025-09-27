@@ -4,10 +4,11 @@ import chalk from 'chalk';
 export interface TemplateOptions {
   language: string;
   initGit: boolean;
+  port: number;
 }
 
 export async function chooseTemplate(options: any): Promise<TemplateOptions> {
-  const answers: { language?: string; initGit?: boolean } = {};
+  const answers: { language?: string; initGit?: boolean; port?: number } = {};
   
   // Language selection
   if (options.ts) {
@@ -61,9 +62,32 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     ]);
     answers.initGit = initGit;
   }
+  
+  // Port selection
+  if (options.port) {
+    answers.port = parseInt(options.port, 10);
+  } else {
+    // This type assertion is needed to help TypeScript with the inquirer types
+    const portResponse = await inquirer.prompt([{
+      type: 'input',
+      name: 'port',
+      message: chalk.bold('Enter the port number for your application:'),
+      default: 3000,
+      validate: (input: string) => {
+        const port = parseInt(input, 10);
+        if (isNaN(port) || port < 0 || port > 65535) {
+          return 'Please enter a valid port number (0-65535)';
+        }
+        return true;
+      },
+      filter: (input: string) => parseInt(input, 10)
+    } as any]);
+    answers.port = portResponse.port;
+  }
 
   return {
     language: answers.language!,
-    initGit: answers.initGit!
+    initGit: answers.initGit!,
+    port: answers.port!
   };
 }
