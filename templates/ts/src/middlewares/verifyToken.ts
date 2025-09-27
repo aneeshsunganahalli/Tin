@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { JwtPayload } from '../types';
-import User from '../models/userModel';
+import User from '../models/userModel.js';
+import { JwtPayload } from '@/types/index.js';
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
