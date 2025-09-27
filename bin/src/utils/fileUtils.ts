@@ -32,7 +32,7 @@ export function checkProjectExists(targetPath: string, projectName: string): voi
 
 export function createGitIgnore(targetDir: string): void {
   const gitIgnoreContent = `
-  # Node dependencies
+# Node dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -73,20 +73,14 @@ coverage/
 .nyc_output/
 *.lcov
 
-# Docker
-.dockerignore
-Dockerfile
-docker-compose.yml
-
 # TypeScript
 *.tsbuildinfo
 
 # Misc
 *.bak
 *.tmp
-
-  `;
-  const gitIgnorePath = path.join(targetDir, '.env');
+`;
+  const gitIgnorePath = path.join(targetDir, '.gitignore');
   
   // Ensure the target directory exists
   fs.ensureDirSync(targetDir);

@@ -1,115 +1,167 @@
-# Create Tin
+# Tin - Express.js Project Generator
 
-[![npm version](https://img.shields.io/npm/v/create-tin.svg)](https://www.npmjs.com/package/create-tin)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+![Tin Project Logo](https://img.shields.io/badge/Tin-Express%20Generator-blue)
+![Version](https://img.shields.io/badge/version-2.2.0-green)
+![License](https://img.shields.io/badge/license-ISC-orange)
+![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)
 
-Fast Express.js project scaffold with TypeScript/JavaScript support, JWT authentication, and MongoDB integration.
+Tin is a modern command-line tool for quickly scaffolding Express.js applications with TypeScript or JavaScript. The tool generates a complete project structure with authentication, MongoDB integration, and best practices ready to use.
 
 ## Features
 
-- 🚀 **Instant setup** - Generate Express projects in seconds
-- 🔧 **TypeScript or JavaScript** - Choose your preferred language
-- 🔑 **JWT Authentication** - Built-in auth system
-- 🗄️ **MongoDB Ready** - Pre-configured database connection
-- 📁 **Clean Structure** - Organized project folders
-- ⚡ **Git Integration** - Optional repository initialization
+- ✨ Generate Express.js REST API projects with a single command
+- 🔄 Choose between **TypeScript** and **JavaScript** templates
+- 🔒 Built-in JWT authentication system
+- 📦 MongoDB integration with Mongoose
+- 🐳 Optional Docker configuration generation
+- 🚀 Modular architecture with best practices
+- 🛠️ Fully configured development environment
+- 📝 Error handling middleware
+- 🔧 Environment variables configuration
+
+## Installation
+
+### Global Installation (Recommended)
+
+```bash
+npm install -g create-tin
+```
+
+### Using npx (No Installation Required)
+
+```bash
+npx create-tin my-api-project
+```
 
 ## Quick Start
 
+### Create a New Project
+
 ```bash
-npx create-tin my-project
+# Using the installed package
+create-tin my-api-project
+
+# Or using npx
+npx create-tin my-api-project
 ```
 
-## Usage
+Follow the interactive prompts to configure your project:
+1. Choose language (TypeScript or JavaScript)
+2. Initialize Git repository
+3. Set the server port
+4. Add Docker configuration
 
-### Interactive Mode
+## Command Line Options
+
+| Option | Description |
+|--------|-------------|
+| `--ts` | Use TypeScript template |
+| `--js` | Use JavaScript template |
+| `--git` | Initialize Git repository |
+| `--skip-git` | Skip Git initialization |
+| `--port <number>` | Specify the server port (default: 3000) |
+| `--docker` | Include Docker configuration |
+| `--skip-docker` | Skip Docker configuration |
+
+## Example Usage
+
 ```bash
-npx create-tin my-express-app
+# Create a TypeScript project with Git and Docker configuration
+create-tin my-ts-api --ts --git --docker
+
+# Create a JavaScript project without Git and Docker
+create-tin my-js-api --js --skip-git --skip-docker --port 5000
 ```
 
-### Command Line Flags
-```bash
-# TypeScript with git
-npx create-tin my-project --ts --git
-
-# JavaScript without git
-npx create-tin my-project --js --skip-git
-```
-
-### Available Options
-- `--ts` - Use TypeScript
-- `--js` - Use JavaScript  
-- `--git` - Initialize git repository
-- `--skip-git` - Skip git initialization
-
-## Project Structure
+## Generated Project Structure
 
 ### TypeScript Project
+
 ```
-my-project/
+my-api-project/
 ├── src/
-│   ├── index.ts
-│   ├── config/db.ts
-│   ├── controllers/authController.ts
+│   ├── config/
+│   │   └── db.ts
+│   ├── controllers/
+│   │   └── authController.ts
 │   ├── middlewares/
-│   ├── models/userModel.ts
-│   ├── routes/authRoutes.ts
-│   └── types/
+│   │   ├── errorHandler.ts
+│   │   └── verifyToken.ts
+│   ├── models/
+│   │   └── userModel.ts
+│   ├── routes/
+│   │   └── authRoutes.ts
+│   ├── types/
+│   │   ├── constants.ts
+│   │   └── index.d.ts
+│   └── index.ts
+├── .env.example
+├── .gitignore
 ├── package.json
 ├── tsconfig.json
-├── .env
 └── README.md
 ```
 
 ### JavaScript Project
+
 ```
-my-project/
+my-api-project/
 ├── src/
-│   ├── index.js
-│   ├── config/db.js
-│   ├── controllers/authController.js
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   └── authController.js
 │   ├── middlewares/
-│   ├── models/userModel.js
-│   └── routes/authRoutes.js
+│   │   ├── errorHandler.js
+│   │   └── verifyToken.js
+│   ├── models/
+│   │   └── userModel.js
+│   ├── routes/
+│   │   └── authRoutes.js
+│   └── index.js
+├── .env.example
+├── .gitignore
 ├── package.json
-├── .env
 └── README.md
 ```
 
-## Environment Variables
+## Docker Support
 
-Generated `.env` file:
-```env
-MONGO=mongodb://localhost:27017/myapp
-PORT=5000
-```
+When Docker configuration is enabled, the following files are generated:
 
-## Getting Started
+- `Dockerfile` - Optimized multi-stage build
+- `docker-compose.yml` - Docker Compose setup with MongoDB
+- `.dockerignore` - Ignores unnecessary files
 
-After scaffolding:
+## Getting Started With Generated Projects
+
+After generating your project:
 
 ```bash
-cd my-project
-npm run dev  # Start development server
+# Navigate to your project directory
+cd my-api-project
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
 
-## API Endpoints
+## Features of Generated Projects
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | User registration |
-| POST | `/api/auth/login` | User login |
-| GET | `/api/auth/profile` | Get user profile (protected) |
+- **Express.js REST API** structure with clean architecture
+- **JWT Authentication** with secure login and registration
+- **MongoDB** integration with Mongoose
+- **Environment variables** configuration
+- **Error handling** middleware
+- **TypeScript** type definitions (TypeScript template only)
 
-## Dependencies
+## Requirements
 
-**Runtime:**
-- express, mongoose, jsonwebtoken, bcryptjs, cors, dotenv
-
-**TypeScript projects also include:**
-- typescript, @types/*, tsx, rimraf
+- Node.js >= 16.0.0
+- npm >= 8.0.0
 
 ## License
 
-ISC
-
+This project is licensed under the ISC License.
