@@ -3,7 +3,7 @@
 <div align="center">
 
 ![Tin Project Logo](https://img.shields.io/badge/Tin-Express%20Generator-4A90E2?style=for-the-badge&logo=express&logoColor=white)
-![Version](https://img.shields.io/badge/version-2.2.2-6495ED?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.3.0-6495ED?style=for-the-badge)
 ![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-44883e?style=for-the-badge&logo=node.js&logoColor=white)
 ![License](https://img.shields.io/badge/license-ISC-orange?style=for-the-badge)
 ![Downloads](https://img.shields.io/npm/dm/create-tin?style=for-the-badge)
@@ -31,7 +31,9 @@
  ### 🎯 Core Functionality  
 > - ⚡ **Generate Express.js REST APIs** in one command  
 > - 🔄 **Choose TypeScript or JavaScript** templates  
-> - 🔒 **JWT Authentication** system included  
+> - 🔒 **Flexible Authentication Options:**  
+>   - 🔑 **JWT Authentication** (header-based)  
+>   - 🍪 **Cookie-based JWT** for enhanced security  
 > - 📦 **MongoDB integration** with Mongoose  
 
  ### 🛠️ Developer Experience  
@@ -69,9 +71,10 @@ npx create-tin my-api-project
 
 ### <span style="color: #8E44AD;">Interactive Setup Process:</span>
 1. <span style="color: #2ECC71;">**Choose language**</span> (TypeScript or JavaScript)
-2. <span style="color: #3498DB;">**Initialize Git repository**</span>
-3. <span style="color: #E67E22;">**Set the server port**</span>
-4. <span style="color: #1ABC9C;">**Add Docker configuration**</span>
+2. <span style="color: #E74C3C;">**Select authentication method**</span> (JWT or Cookie-based)
+3. <span style="color: #3498DB;">**Initialize Git repository**</span>
+4. <span style="color: #E67E22;">**Set the server port**</span>
+5. <span style="color: #1ABC9C;">**Add Docker configuration**</span>
 
 ---
 
@@ -83,6 +86,8 @@ Usage: create-tin [options] [project-name]
 Options:
   --ts            Generate a TypeScript project template
   --js            Generate a JavaScript project template
+  --jwt           Use JWT-based authentication (tokens in Authorization header)
+  --cookies       Use Cookie-based authentication (JWT stored in HTTP-only cookies)
   --git           Initialize a new Git repository
   --skip-git      Skip Git initialization
   --port <number> Set the server port (default: 3000)
@@ -95,11 +100,11 @@ Options:
 ## <span style="color: #FF6B35;">💡 Example Usage</span>
 
 ```bash
-# Create a TypeScript project with Git and Docker configuration
-create-tin my-ts-api --ts --git --docker
+# Create a TypeScript project with JWT auth, Git and Docker configuration
+create-tin my-ts-api --ts --jwt --git --docker
 
-# Create a JavaScript project without Git and Docker
-create-tin my-js-api --js --skip-git --skip-docker --port 5000
+# Create a JavaScript project with cookie-based auth without Git and Docker
+create-tin my-js-api --js --cookies --skip-git --skip-docker --port 5000
 ```
 
 ---
@@ -196,8 +201,10 @@ npm run dev
 > 🏗️ **Express.js REST API**  
 > Clean architecture structure ready to use  
 
-> 🔐 **JWT Authentication**  
-> Secure login and registration system  
+> 🔐 **Authentication Options**  
+> Choose between:  
+> - **JWT Authentication** - Traditional token-based auth via headers  
+> - **Cookie-based JWT** - Enhanced security with HTTP-only cookies  
 
 > 📊 **MongoDB Integration**  
 > Complete setup with Mongoose ODM  
@@ -241,6 +248,7 @@ npm run dev
 |---------|-----|-------------------|-----------------|
 | TypeScript Support | ✅ | ❌ | ✅ |
 | JWT Authentication | ✅ | ❌ | ❌ |
+| Cookie-based Auth | ✅ | ❌ | ❌ |
 | MongoDB Integration | ✅ | ❌ | ❌ |
 | Docker Support | ✅ | ❌ | ❌ |
 | Interactive CLI | ✅ | ❌ | ✅ |
@@ -253,10 +261,6 @@ npm run dev
 - **Full-stack Applications**: Use as a backend for React, Vue, or Angular apps
 - **Proof of Concepts**: Quickly scaffold ideas with a solid foundation
 - **Learning Projects**: Ideal for teaching Express.js best practices
-
-## 📚 Documentation
-
-For complete documentation, visit our [GitHub Wiki](https://github.com/aneeshsunganahalli/Tin/wiki).
 
 ## 👥 Contributing
 

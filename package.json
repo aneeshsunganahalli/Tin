@@ -1,7 +1,7 @@
 {
   "name": "create-tin",
-  "version": "2.2.4",
-  "description": "Modern Express.js project generator with TypeScript/JavaScript templates, MongoDB integration, JWT authentication, and Docker support",
+  "version": "2.3.0",
+  "description": "Modern Express.js project generator with TypeScript/JavaScript templates, MongoDB integration, flexible authentication options, and Docker support",
   "main": "dist/bin/index.js",
   "type": "module",
   "bin": {
