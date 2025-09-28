@@ -38,3 +38,7 @@ logs/
 
 # Tests
 __tests__/temp
+
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+keywords.txt

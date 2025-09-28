@@ -1,9 +1,12 @@
 {
   "name": "create-tin",
-  "version": "2.2.2",
-  "description": "Scaffold a TypeScript or JavaScript Express boilerplate",
+  "version": "2.2.4",
+  "description": "Modern Express.js project generator with TypeScript/JavaScript templates, MongoDB integration, JWT authentication, and Docker support",
   "main": "dist/bin/index.js",
   "type": "module",
+  "bin": {
+    "create-tin": "dist/bin/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && tsc && npm run copy-templates",
@@ -25,9 +28,30 @@
     "mongodb",
     "create",
     "generator",
-    "node"
+    "node",
+    "express-generator",
+    "api",
+    "rest-api",
+    "starter-kit",
+    "express-boilerplate",
+    "nodejs",
+    "web-development",
+    "backend",
+    "server",
+    "docker",
+    "mongoose",
+    "express-typescript",
+    "express-javascript",
+    "backend-generator",
+    "api-generator",
+    "tin",
+    "tin-tin",
+    "create-tin"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": {
+    "name": "Aneesh Sunganahalli",
+    "url": "https://github.com/aneeshsunganahalli"
+  },
   "license": "ISC",
   "engines": {
     "node": ">=16.0.0",
@@ -38,9 +62,17 @@
     "url": "https://github.com/aneeshsunganahalli/Tin"
   },
   "bugs": {
-    "url": "https://github.com/your-username/create-tin/issues"
+    "url": "https://github.com/aneeshsunganahalli/Tin/issues"
   },
   "homepage": "https://github.com/aneeshsunganahalli/Tin#readme",
+  "files": [
+    "dist/",
+    "dist/templates/",
+    "scripts/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
@@ -55,13 +87,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
-  "bin": {
-    "create-tin": "dist/bin/index.js"
-  },
-  "files": [
-    "dist/",
-    "dist/templates/",
-    "scripts/",
-    "README.md"
-  ]
+  "publishConfig": {
+    "access": "public"
+  }
 }
