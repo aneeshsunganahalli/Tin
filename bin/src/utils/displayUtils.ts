@@ -10,6 +10,7 @@ export function displayHeader(): void {
 export function displaySuccessMessage(
   projectName: string, 
   isTS: boolean, 
+  isOnlyJWT: boolean,
   initGit: boolean,
   port: number = 3000,
   docker: boolean = false
@@ -22,6 +23,7 @@ export function displaySuccessMessage(
   console.log();
   console.log(chalk.bold('  📋 Configuration Summary:'));
   console.log(`     Language: ${langColor.bold(isTS ? 'TypeScript' : 'JavaScript')}`);
+  console.log(`     Authentication: ${langColor.bold(isOnlyJWT ? 'JWT (header-based)' : 'Cookie-based JWT')}`);
   console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Docker:   ${docker ? chalk.green.bold('✓ Configured') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Database: ${chalk.magenta.bold('MONGODB_URI')} ${chalk.gray('(configurable in .env)')}`);

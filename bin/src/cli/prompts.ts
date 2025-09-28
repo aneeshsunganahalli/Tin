@@ -6,11 +6,12 @@ export interface TemplateOptions {
   initGit: boolean;
   port: number;
   docker: boolean;
+  authMethod: string;
 }
 
 export async function chooseTemplate(options: any): Promise<TemplateOptions> {
-  const answers: { language?: string; initGit?: boolean; port?: number; docker?: boolean } = {};
-  
+  const answers: { language?: string; initGit?: boolean; port?: number; docker?: boolean; authMethod?: string } = {};
+
   // Language selection
   if (options.ts) {
     answers.language = 'ts';
@@ -23,20 +24,46 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
         name: 'language',
         message: chalk.bold('Choose a language:'),
         choices: [
-          { 
-            name: `${chalk.blue('●')} ${chalk.blue.bold('TypeScript')} ${chalk.gray('- Type-safe JavaScript')}`, 
-            value: 'ts' 
+          {
+            name: `${chalk.blue('●')} ${chalk.blue.bold('TypeScript')} ${chalk.gray('- Type-safe JavaScript')}`,
+            value: 'ts'
           },
-          { 
-            name: `${chalk.yellow('●')} ${chalk.yellow.bold('JavaScript')} ${chalk.gray('- Classic JavaScript')}`, 
-            value: 'js' 
+          {
+            name: `${chalk.yellow('●')} ${chalk.yellow.bold('JavaScript')} ${chalk.gray('- Classic JavaScript')}`,
+            value: 'js'
           },
         ],
       },
     ]);
     answers.language = language;
   }
-  
+
+  // Authentication Method selection
+  if (options.jwt) {
+    answers.authMethod = 'jwt';
+  } else if (options.cookies) {
+    answers.authMethod = 'cookies';
+  } else {
+    const { authMethod } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'authMethod',
+        message: chalk.bold('Choose authentication method:'),
+        choices: [
+          {
+            name: `${chalk.red('●')} ${chalk.blue.bold('JWT (header-based)')} ${chalk.gray('- Classic JWT Authentication')}`,
+            value: 'jwt'
+          },
+          {
+            name: `${chalk.blue('●')} ${chalk.yellow.bold('Cookies')} ${chalk.gray('- More Secure JWT Authentication Using Cookie')}`,
+            value: 'cookies'
+          },
+        ],
+      },
+    ]);
+    answers.authMethod = authMethod;
+  }
+
   // Git initialization selection
   if (options.git) {
     answers.initGit = true;
@@ -49,13 +76,13 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
         name: 'initGit',
         message: chalk.bold('Initialize Git repository?'),
         choices: [
-          { 
-            name: `${chalk.green('✓')} ${chalk.bold('Yes')} ${chalk.gray('- Initialize with Git')}`, 
-            value: true 
+          {
+            name: `${chalk.green('✓')} ${chalk.bold('Yes')} ${chalk.gray('- Initialize with Git')}`,
+            value: true
           },
-          { 
-            name: `${chalk.red('✗')} ${chalk.bold('No')} ${chalk.gray('- Skip Git setup')}`, 
-            value: false 
+          {
+            name: `${chalk.red('✗')} ${chalk.bold('No')} ${chalk.gray('- Skip Git setup')}`,
+            value: false
           },
         ],
         default: 0,
@@ -63,7 +90,7 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     ]);
     answers.initGit = initGit;
   }
-  
+
   // Port selection
   if (options.port) {
     answers.port = parseInt(options.port, 10);
@@ -97,13 +124,13 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
       name: 'docker',
       message: chalk.bold('Include Docker configuration?'),
       choices: [
-        { 
-          name: `${chalk.green('✓')} ${chalk.bold('Yes')} ${chalk.gray('- Include Dockerfile and docker-compose.yml')}`, 
-          value: true 
+        {
+          name: `${chalk.green('✓')} ${chalk.bold('Yes')} ${chalk.gray('- Include Dockerfile and docker-compose.yml')}`,
+          value: true
         },
-        { 
-          name: `${chalk.red('✗')} ${chalk.bold('No')} ${chalk.gray('- Skip Docker setup')}`, 
-          value: false 
+        {
+          name: `${chalk.red('✗')} ${chalk.bold('No')} ${chalk.gray('- Skip Docker setup')}`,
+          value: false
         },
       ],
       default: 0
@@ -115,6 +142,7 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     language: answers.language!,
     initGit: answers.initGit!,
     port: answers.port!,
-    docker: answers.docker!
+    docker: answers.docker!,
+    authMethod: answers.authMethod!
   };
 }

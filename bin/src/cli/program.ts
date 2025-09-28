@@ -8,6 +8,8 @@ export function createProgram(): Command {
     .description('Scaffold a TypeScript or JavaScript Express boilerplate')
     .option('--ts', 'Use TypeScript')
     .option('--js', 'Use JavaScript')
+    .option('--jwt', 'Use JWT-based authentication')
+    .option('--cookies', 'Use Cookie-based authentication')
     .option('--skip-git', 'Skip Git repository initialization')
     .option('--git', 'Initialize Git repository')
     .option('--port <number>', 'Specify the port number (default: 3000)')
