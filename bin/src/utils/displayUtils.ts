@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { AuthMethod } from '../cli/prompts.js';
 
 export function displayHeader(): void {
   console.log();

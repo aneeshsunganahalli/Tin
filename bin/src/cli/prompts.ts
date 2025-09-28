@@ -1,16 +1,25 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 
+// Define type-safe auth method options
+export type AuthMethod = 'jwt' | 'cookies';
+
 export interface TemplateOptions {
-  language: string;
+  language: 'ts' | 'js';
   initGit: boolean;
   port: number;
   docker: boolean;
-  authMethod: string;
+  authMethod: AuthMethod;
 }
 
 export async function chooseTemplate(options: any): Promise<TemplateOptions> {
-  const answers: { language?: string; initGit?: boolean; port?: number; docker?: boolean; authMethod?: string } = {};
+  const answers: { 
+    language?: 'ts' | 'js'; 
+    initGit?: boolean; 
+    port?: number; 
+    docker?: boolean; 
+    authMethod?: AuthMethod 
+  } = {};
 
   // Language selection
   if (options.ts) {
@@ -138,11 +147,12 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     answers.docker = docker;
   }
 
+  // Type assertion here is safe because we've already validated all options
   return {
-    language: answers.language!,
+    language: answers.language! as 'ts' | 'js',
     initGit: answers.initGit!,
     port: answers.port!,
     docker: answers.docker!,
-    authMethod: answers.authMethod!
+    authMethod: answers.authMethod! as AuthMethod
   };
 }

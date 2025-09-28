@@ -16,7 +16,7 @@ export async function createProject(
   __dirname: string
 ): Promise<void> {
   const isTS = template.language === 'ts';
-  const isOnlyJWT = template.authMethod === 'jwt'
+  const isOnlyJWT = template.authMethod === 'jwt';
   const initGit = template.initGit;
   const langColor = isTS ? chalk.blue : chalk.yellow;
 

@@ -1,8 +1,9 @@
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
+import { AuthMethod } from '../cli/prompts.js';
 
-export function findTemplatePath(templateLanguage: string, __dirname: string, templateAuthMethod: string): string {
+export function findTemplatePath(templateLanguage: 'ts' | 'js', __dirname: string, templateAuthMethod: AuthMethod): string {
   // Try multiple possible template paths to handle different installation scenarios
   const templatePaths = [
     // NPM package paths (production) - check these first
