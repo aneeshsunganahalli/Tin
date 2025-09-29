@@ -15,6 +15,8 @@ export function createProgram(): Command {
     .option('--port <number>', 'Specify the port number (default: 3000)')
     .option('--docker', 'Include Docker configuration')
     .option('--skip-docker', 'Skip Docker configuration')
+    .option('--swagger', 'Include Swagger UI with OpenAPI documentation')
+    .option('--skip-swagger', 'Skip Swagger UI')
     .argument('[project-name]', 'Name of the project')
     .parse();
 

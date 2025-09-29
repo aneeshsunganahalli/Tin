@@ -14,7 +14,8 @@ export function displaySuccessMessage(
   isOnlyJWT: boolean,
   initGit: boolean,
   port: number = 3000,
-  docker: boolean = false
+  docker: boolean = false,
+  swagger: boolean = false
 ): void {
   const langColor = isTS ? chalk.blue : chalk.yellow;
   
@@ -27,12 +28,18 @@ export function displaySuccessMessage(
   console.log(`     Authentication: ${langColor.bold(isOnlyJWT ? 'JWT (header-based)' : 'Cookie-based JWT')}`);
   console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Docker:   ${docker ? chalk.green.bold('✓ Configured') : chalk.yellow.bold('✗ Skipped')}`);
+  console.log(`     Swagger:  ${swagger ? chalk.green.bold('✓ Configured (Dark Mode)') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Database: ${chalk.magenta.bold('MONGODB_URI')} ${chalk.gray('(configurable in .env)')}`);
   console.log(`     Port:     ${chalk.cyan.bold(port)} ${chalk.gray('(configurable in .env)')}`);
   console.log();
   console.log(chalk.bold('  🚀 Next steps:'));
   console.log(chalk.cyan(`     cd ${projectName}`));
   console.log(chalk.cyan('     npm run dev'));
+  if (swagger) {
+    console.log();
+    console.log(chalk.bold('  📚 API Documentation:'));
+    console.log(chalk.cyan(`     http://localhost:${port}/api-docs`));
+  }
   console.log();
   console.log(chalk.gray('  Happy coding! 🎯'));
 }

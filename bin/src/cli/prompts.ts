@@ -10,6 +10,7 @@ export interface TemplateOptions {
   port: number;
   docker: boolean;
   authMethod: AuthMethod;
+  swagger: boolean;
 }
 
 export async function chooseTemplate(options: any): Promise<TemplateOptions> {
@@ -18,7 +19,8 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     initGit?: boolean; 
     port?: number; 
     docker?: boolean; 
-    authMethod?: AuthMethod 
+    authMethod?: AuthMethod;
+    swagger?: boolean;
   } = {};
 
   // Language selection
@@ -60,7 +62,7 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
         message: chalk.bold('Choose authentication method:'),
         choices: [
           {
-            name: `${chalk.red('●')} ${chalk.blue.bold('JWT (header-based)')} ${chalk.gray('- Classic JWT Authentication')}`,
+            name: `${chalk.white('●')} ${chalk.blue.bold('JWT (header-based)')} ${chalk.gray('- Classic JWT Authentication')}`,
             value: 'jwt'
           },
           {
@@ -147,12 +149,38 @@ export async function chooseTemplate(options: any): Promise<TemplateOptions> {
     answers.docker = docker;
   }
 
+  // Swagger UI setup selection
+  if (options.swagger) {
+    answers.swagger = true;
+  } else if (options.skipSwagger) {
+    answers.swagger = false;
+  } else {
+    const { swagger } = await inquirer.prompt([{
+      type: 'list',
+      name: 'swagger',
+      message: chalk.bold('Include Swagger UI with OpenAPI documentation?'),
+      choices: [
+        {
+          name: `${chalk.green('✓')} ${chalk.bold('Yes')} ${chalk.gray('- Include Swagger UI in dark mode')}`,
+          value: true
+        },
+        {
+          name: `${chalk.red('✗')} ${chalk.bold('No')} ${chalk.gray('- Skip Swagger UI')}`,
+          value: false
+        },
+      ],
+      default: 0
+    } as any]);
+    answers.swagger = swagger;
+  }
+
   // Type assertion here is safe because we've already validated all options
   return {
     language: answers.language! as 'ts' | 'js',
     initGit: answers.initGit!,
     port: answers.port!,
     docker: answers.docker!,
-    authMethod: answers.authMethod! as AuthMethod
+    authMethod: answers.authMethod! as AuthMethod,
+    swagger: answers.swagger!
   };
 }

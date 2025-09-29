@@ -5,6 +5,7 @@ import { TemplateOptions } from './cli/prompts.js';
 import { displaySuccessMessage } from './utils/displayUtils.js';
 import { checkProjectExists, createEnvFile, createGitIgnore, updatePackageJson } from './utils/fileUtils.js';
 import { createDockerFiles } from './utils/dockerUtils.js';
+import { setupSwaggerUI } from './utils/swaggerUtils.js';
 import { copyTemplate, findTemplatePath } from './templates/manager.js';
 import { gitInitFast, installDependenciesAsync } from './utils/installUtils.js';
 
@@ -43,6 +44,12 @@ export async function createProject(
     if (template.docker) {
       createDockerFiles(targetPath, isTS, template.port);
     }
+
+    // Add Swagger UI if selected
+    if (template.swagger) {
+      await setupSwaggerUI(targetPath, isTS, template.port);
+    }
+    
     spinner.succeed(chalk.green.bold(`✨ Created ${langColor.bold(projectName)} project!`));
   } catch (e) {
     spinner.fail(chalk.red.bold('Project creation failed.'));
@@ -67,5 +74,13 @@ export async function createProject(
   // Run dependency installation and git init in parallel for speed
   await Promise.all(tasks);
 
-  displaySuccessMessage(projectName, isTS, isOnlyJWT, initGit, template.port, template.docker);
+  displaySuccessMessage(
+    projectName, 
+    isTS, 
+    isOnlyJWT, 
+    initGit, 
+    template.port, 
+    template.docker, 
+    template.swagger
+  );
 }
