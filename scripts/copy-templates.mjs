@@ -28,12 +28,24 @@ try {
     }
   });
   
-  // Verify the copy was successful
-  const jsTemplate = path.join(templatesDestination, 'js', 'package.json');
-  const tsTemplate = path.join(templatesDestination, 'ts', 'package.json');
+  // Verify the copy was successful - check all template variations
+  const jsJwtTemplate = path.join(templatesDestination, 'js', 'jwt', 'package.json');
+  const jsCookiesTemplate = path.join(templatesDestination, 'js', 'cookies', 'package.json');
+  const tsJwtTemplate = path.join(templatesDestination, 'ts', 'jwt', 'package.json');
+  const tsCookiesTemplate = path.join(templatesDestination, 'ts', 'cookies', 'package.json');
   
-  if (!await fs.pathExists(jsTemplate) || !await fs.pathExists(tsTemplate)) {
-    throw new Error('Template copy verification failed - missing template files');
+  // Check if all template variations exist
+  const templatePaths = [jsJwtTemplate, jsCookiesTemplate, tsJwtTemplate, tsCookiesTemplate];
+  const missingTemplates = [];
+  
+  for (const templatePath of templatePaths) {
+    if (!await fs.pathExists(templatePath)) {
+      missingTemplates.push(templatePath);
+    }
+  }
+  
+  if (missingTemplates.length > 0) {
+    throw new Error(`Template copy verification failed - missing template files: ${missingTemplates.join(', ')}`);
   }
   
   console.log('Templates copied successfully!');
