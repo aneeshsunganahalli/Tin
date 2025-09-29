@@ -9,13 +9,25 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run clean && tsc && npm run copy-templates",
+    "build": "npm run clean && tsc && npm run copy-templates && npm run clean-templates",
     "copy-templates": "node scripts/copy-templates.mjs",
+    "clean-templates": "node scripts/clean-templates.mjs",
     "start": "node dist/bin/index.js",
     "dev": "tsc && node dist/bin/index.js",
     "prepublishOnly": "npm run build",
     "clean": "rimraf dist"
   },
+  "files": [
+    "dist/",
+    "dist/bin/",
+    "dist/templates/",
+    "templates/js/cookies/**/!(node_modules)",
+    "templates/js/jwt/**/!(node_modules)",
+    "templates/ts/cookies/**/!(node_modules)",
+    "templates/ts/jwt/**/!(node_modules)",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "express",
     "cli",
@@ -67,14 +79,6 @@
     "url": "https://github.com/aneeshsunganahalli/Tin/issues"
   },
   "homepage": "https://github.com/aneeshsunganahalli/Tin#readme",
-  "files": [
-    "dist/",
-    "dist/templates/",
-    "scripts/",
-    "templates/",
-    "README.md",
-    "LICENSE"
-  ],
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",

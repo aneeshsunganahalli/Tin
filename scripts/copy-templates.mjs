@@ -21,7 +21,9 @@ try {
     filter: (src) => {
       // Skip node_modules and other build artifacts
       const basename = path.basename(src);
-      return !basename.includes('node_modules') && 
+      const isNodeModules = src.includes('node_modules');
+      return !isNodeModules && 
+             !basename.includes('node_modules') && 
              !basename.includes('.git') && 
              !basename.startsWith('.') &&
              basename !== 'dist';

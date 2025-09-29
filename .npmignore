@@ -19,12 +19,27 @@ templates/**/node_modules/
 templates/**/dist/
 
 # Development files
+node_modules/
+.github/
 .vscode/
 .idea/
 .DS_Store
-.env
 *.log
-npm-debug.log*
+*.tgz
+
+# Exclude all node_modules in templates - ensure they're not packed
+templates/**/node_modules/
+templates/js/*/node_modules/
+templates/ts/*/node_modules/
+templates/*/node_modules/
+**/node_modules/
+
+# Source files (since we're publishing the compiled version)
+bin/src/
+tests/
+
+# Build artifacts
+coverage/
 
 # Git files
 .git/
