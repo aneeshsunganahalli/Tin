@@ -3,7 +3,7 @@
 <div align="center">
 
 ![Tin Project Logo](https://img.shields.io/badge/Tin-Express%20Generator-4A90E2?style=for-the-badge&logo=express&logoColor=white)
-![Version](https://img.shields.io/badge/version-2.3.0-6495ED?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.4.0-6495ED?style=for-the-badge)
 ![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-44883e?style=for-the-badge&logo=node.js&logoColor=white)
 ![License](https://img.shields.io/badge/license-ISC-orange?style=for-the-badge)
 ![Downloads](https://img.shields.io/npm/dm/create-tin?style=for-the-badge)
@@ -35,6 +35,7 @@
 >   - 🔑 **JWT Authentication** (header-based)  
 >   - 🍪 **Cookie-based JWT** for enhanced security  
 > - 📦 **MongoDB integration** with Mongoose  
+> - 📚 **Swagger UI with OpenAPI documentation** (optional, dark mode)
 
  ### 🛠️ Developer Experience  
 > - 🐳 **Optional Docker setup** generation  
@@ -93,8 +94,12 @@ Options:
   --port <number> Set the server port (default: 3000)
   --docker        Include Docker configuration
   --skip-docker   Skip adding Docker configuration
+  --swagger       Include Swagger UI with OpenAPI documentation (dark mode)
+  --skip-swagger  Skip adding Swagger UI
   -h, --help      Display this help message
 ```
+
+> **💡 Tip:** Use the `--swagger` flag to automatically add API documentation with Swagger UI to your project. The documentation comes pre-configured with a dark mode theme and includes example endpoints for authentication.
 
 
 ## <span style="color: #FF6B35;">💡 Example Usage</span>
@@ -105,7 +110,63 @@ create-tin my-ts-api --ts --jwt --git --docker
 
 # Create a JavaScript project with cookie-based auth without Git and Docker
 create-tin my-js-api --js --cookies --skip-git --skip-docker --port 5000
+
+# Create a TypeScript project with JWT auth, Git, Docker and Swagger UI
+create-tin api-docs --ts --jwt --git --docker --swagger
 ```
+
+### <span style="color: #3498DB;">Using Swagger UI in Your Project</span>
+
+When you create a project with the `--swagger` flag, your API will automatically be configured with Swagger UI documentation. After starting your server, you can access the API documentation at:
+
+```
+http://localhost:PORT/api-docs
+```
+
+The documentation includes:
+- Authentication endpoints (register, login)
+- Interactive testing capabilities
+- Request/response examples
+- Dark mode UI for better readability
+- Full-page responsive design
+
+The Swagger UI integration is fully customizable:
+- Edit the API specification in `src/docs/openapi.yaml`
+- Customize the dark theme in `src/styles/swagger-dark.css`
+- Configure Swagger UI options in `src/config/swagger.ts` (or `.js`)
+
+---
+
+## <span style="color: #2ECC71;">📚 API Documentation with Swagger UI</span>
+
+If you choose to include Swagger UI when generating your project, your API will have built-in interactive documentation available at `/api-docs`.
+
+### <span style="color: #3498DB;">Features</span>
+- **Interactive API Explorer**: Test your API endpoints directly from the browser
+- **Dark Mode UI**: Modern interface with dark theme for better readability
+- **OpenAPI 3.0**: Documentation follows OpenAPI 3.0 specification
+- **Authentication Documentation**: Includes auth endpoints with request/response examples
+- **Fully Responsive**: Works well on all screen sizes
+- **Customizable**: Easy to modify the OpenAPI spec to match your API
+
+### <span style="color: #E67E22;">How to Use</span>
+1. Start your server with `npm run dev` or `npm start`
+2. Navigate to `http://localhost:PORT/api-docs` in your browser
+3. Explore the interactive documentation
+4. Test endpoints directly from the UI
+
+### <span style="color: #9B59B6;">Customization</span>
+- The OpenAPI specification file is located at `src/docs/openapi.yaml`
+- CSS styling can be customized in `src/styles/swagger-dark.css`
+- Configure Swagger UI options in `src/config/swagger.ts` (or `swagger.js`)
+
+### <span style="color: #E74C3C;">Example Screenshot</span>
+
+<div align="center">
+  <img src="https://github.com/aneeshsunganahalli/Tin/raw/main/assets/swagger-ui-dark.png" alt="Swagger UI Dark Mode" width="80%">
+  <br>
+  <em>Swagger UI with Dark Mode Theme</em>
+</div>
 
 ---
 
@@ -118,7 +179,8 @@ create-tin my-js-api --js --cookies --skip-git --skip-docker --port 5000
 my-api-project/
 ├── src/
 │   ├── config/
-│   │   └── db.ts
+│   │   ├── db.ts
+│   │   └── swagger.ts (if Swagger UI option selected)
 │   ├── controllers/
 │   │   └── authController.ts
 │   ├── middlewares/
@@ -126,6 +188,10 @@ my-api-project/
 │   │   └── verifyToken.ts
 │   ├── models/
 │   │   └── userModel.ts
+│   ├── docs/
+│   │   └── openapi.yaml (if Swagger UI option selected)
+│   ├── styles/
+│   │   └── swagger-dark.css (if Swagger UI option selected)
 │   ├── routes/
 │   │   └── authRoutes.ts
 │   ├── types/
@@ -147,7 +213,8 @@ my-api-project/
 my-api-project/
 ├── src/
 │   ├── config/
-│   │   └── db.js
+│   │   ├── db.js
+│   │   └── swagger.js (if Swagger UI option selected)
 │   ├── controllers/
 │   │   └── authController.js
 │   ├── middlewares/
@@ -155,6 +222,10 @@ my-api-project/
 │   │   └── verifyToken.js
 │   ├── models/
 │   │   └── userModel.js
+│   ├── docs/
+│   │   └── openapi.yaml (if Swagger UI option selected)
+│   ├── styles/
+│   │   └── swagger-dark.css (if Swagger UI option selected)
 │   ├── routes/
 │   │   └── authRoutes.js
 │   └── index.js
@@ -209,7 +280,13 @@ npm run dev
 > 📊 **MongoDB Integration**  
 > Complete setup with Mongoose ODM  
 
-> 🔧 **Environment Variables**  
+> � **API Documentation**  
+> - **Swagger UI Integration** - Interactive API explorer  
+> - **Dark Mode Interface** - Modern and readable design  
+> - **OpenAPI 3.0** - Comprehensive API specification  
+> - **Pre-configured Auth Routes** - Ready to test and extend  
+
+> �🔧 **Environment Variables**  
 > Configuration setup included  
 
 > ⚠️ **Error Handling**  
@@ -250,6 +327,8 @@ npm run dev
 | JWT Authentication | ✅ | ❌ | ❌ |
 | Cookie-based Auth | ✅ | ❌ | ❌ |
 | MongoDB Integration | ✅ | ❌ | ❌ |
+| Swagger UI / API Docs | ✅ | ❌ | ❌ |
+| Dark Mode UI | ✅ | ❌ | ❌ |
 | Docker Support | ✅ | ❌ | ❌ |
 | Interactive CLI | ✅ | ❌ | ✅ |
 | Git Integration | ✅ | ❌ | ✅ |

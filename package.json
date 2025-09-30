@@ -1,6 +1,6 @@
 {
   "name": "create-tin",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "Modern Express.js project generator with TypeScript/JavaScript templates, MongoDB integration, flexible authentication options, and Docker support",
   "main": "dist/bin/index.js",
   "type": "module",
@@ -59,8 +59,8 @@
     "backend-generator",
     "api-generator",
     "tin",
-    "tin-tin",
-    "create-tin"
+    "create-tin",
+    "swagger-ui-express"
   ],
   "author": {
     "name": "Aneesh Sunganahalli",
