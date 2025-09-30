@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
+import { createSwaggerCSSFile } from './swaggerCssUtils.js';
 
 /**
  * Sets up Swagger UI in the project by adding required dependencies and configuration files
@@ -38,10 +39,13 @@ export async function setupSwaggerUI(
     // 2. Create OpenAPI yaml file
     await createOpenAPIYAMLFile(targetPath, isTS, port);
     
-    // 3. Set up Swagger UI configuration
+    // 3. Create Swagger CSS file
+    await createSwaggerCSSFile(targetPath);
+    
+    // 4. Set up Swagger UI configuration
     await createSwaggerConfig(targetPath, isTS);
     
-    // 4. Update index file to include Swagger UI
+    // 5. Update index file to include Swagger UI
     await updateIndexFile(targetPath, isTS);
     
     console.log(chalk.green.bold('✨ Swagger UI has been set up in dark mode!'));
@@ -186,6 +190,7 @@ components:
 /**
  * Creates the Swagger configuration file
  */
+
 async function createSwaggerConfig(
   targetPath: string,
   isTS: boolean
@@ -205,9 +210,13 @@ const __dirname = path.dirname(__filename);
 const openApiPath = path.join(__dirname, '..', 'docs', 'openapi.yaml');
 const openApiSpec = yaml.load(fs.readFileSync(openApiPath, 'utf8')) as Record<string, any>;
 
+// Load custom CSS file
+const cssFilePath = path.join(__dirname, '..', 'styles', 'swagger-dark.css');
+const customCss = fs.readFileSync(cssFilePath, 'utf8');
+
 // Swagger UI options for dark mode
 const options = {
-  customCss: '.swagger-ui .topbar { display: none } .swagger-ui { background-color: #1a1a1a; color: #ffffff; } .swagger-ui .info .title, .swagger-ui .info h1, .swagger-ui .info h2, .swagger-ui .info h3, .swagger-ui .info h4, .swagger-ui .info h5, .swagger-ui .opblock-tag, .swagger-ui .opblock .opblock-summary-operation-id, .swagger-ui .opblock .opblock-summary-path, .swagger-ui .opblock .opblock-summary-path__deprecated, .swagger-ui .opblock .opblock-summary-description, .swagger-ui .model-title, .swagger-ui .models-control { color: #ffffff !important; } .swagger-ui .opblock { background-color: #2d2d2d; border-radius: 4px; margin: 0 0 15px; border: none; box-shadow: 0 0 0 1px rgba(255,255,255,0.1); } .swagger-ui .opblock .opblock-summary { border-bottom: 1px solid rgba(255,255,255,0.1); } .swagger-ui .opblock-description-wrapper, .swagger-ui .opblock-external-docs-wrapper, .swagger-ui .opblock-title_normal { background-color: #2d2d2d; color: #ffffff; } .swagger-ui .opblock-body { background-color: #2d2d2d; } .swagger-ui table { color: #ffffff; background-color: #2d2d2d; } .swagger-ui table thead tr td, .swagger-ui table thead tr th { color: #ffffff; } .swagger-ui input, .swagger-ui select { background-color: #3c3c3c; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); } .swagger-ui .btn { background-color: #4a4a4a; color: white; } .swagger-ui .scheme-container { background-color: #2d2d2d; color: white; box-shadow: none; } .swagger-ui section.models { background-color: #2d2d2d; border: 1px solid rgba(255,255,255,0.1); } .swagger-ui section.models.is-open h4 { color: #ffffff; } .swagger-ui .model-box { background-color: #3c3c3c; } .swagger-ui .model { color: #ffffff; } .swagger-ui .opblock.opblock-get .opblock-summary { background-color: rgba(97, 175, 254, 0.1); } .swagger-ui .opblock.opblock-post .opblock-summary { background-color: rgba(73, 204, 144, 0.1); } .swagger-ui .opblock.opblock-put .opblock-summary { background-color: rgba(252, 161, 48, 0.1); } .swagger-ui .opblock.opblock-delete .opblock-summary { background-color: rgba(249, 62, 62, 0.1); } .swagger-ui .opblock.opblock-patch .opblock-summary { background-color: rgba(80, 227, 194, 0.1); }',
+  customCss,
   customSiteTitle: 'API Documentation',
 };
 
@@ -225,116 +234,16 @@ const __dirname = path.dirname(__filename);
 
 // Load OpenAPI YAML file
 const openApiPath = path.join(__dirname, '..', 'docs', 'openapi.yaml');
-const openApiSpec = yaml.load(fs.readFileSync(openApiPath, 'utf8')) as Record<string, any>;
+const openApiSpec = yaml.load(fs.readFileSync(openApiPath, 'utf8'));
+
+// Load custom CSS file
+const cssFilePath = path.join(__dirname, '..', 'styles', 'swagger-dark.css');
+const customCss = fs.readFileSync(cssFilePath, 'utf8');
 
 // Swagger UI options for dark mode
 const options = {
-  customCss: '
-    /* General background & text */
-    .swagger-ui {
-      background-color: #121212;
-      color: #e0e0e0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    /* Topbar */
-    .swagger-ui .topbar {
-      display: none;
-    }
-
-    /* Info / API title */
-    .swagger-ui .info .title,
-    .swagger-ui .info h1,
-    .swagger-ui .info h2,
-    .swagger-ui .info h3,
-    .swagger-ui .info h4,
-    .swagger-ui .info h5,
-    .swagger-ui .opblock-tag,
-    .swagger-ui .opblock-summary-path,
-    .swagger-ui .opblock-summary-description,
-    .swagger-ui .model-title,
-    .swagger-ui .models-control {
-      color: #ffffff !important;
-    }
-
-    /* Opblocks */
-    .swagger-ui .opblock {
-      background-color: #1f1f1f;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      border: none;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
-    }
-
-    .swagger-ui .opblock .opblock-summary {
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 8px 12px;
-    }
-
-    .swagger-ui .opblock-body {
-      background-color: #2a2a2a;
-      padding: 12px;
-    }
-
-    /* Table styling */
-    .swagger-ui table {
-      color: #e0e0e0;
-      background-color: #1f1f1f;
-    }
-    .swagger-ui table thead tr th,
-    .swagger-ui table thead tr td {
-      color: #ffffff;
-    }
-
-    /* Inputs & buttons */
-    .swagger-ui input,
-    .swagger-ui select {
-      background-color: #2b2b2b;
-      color: #e0e0e0;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .swagger-ui .btn {
-      background-color: #3a3a3a;
-      color: #ffffff;
-    }
-
-    /* Scheme container & models */
-    .swagger-ui .scheme-container,
-    .swagger-ui section.models {
-      background-color: #1f1f1f;
-      color: #ffffff;
-      border: none;
-    }
-
-    .swagger-ui .model-box,
-    .swagger-ui .model {
-      background-color: #2b2b2b;
-      color: #e0e0e0;
-    }
-
-    /* Opblock colors by method */
-    .swagger-ui .opblock.opblock-get .opblock-summary {
-      background-color: rgba(97, 175, 254, 0.1);
-    }
-    .swagger-ui .opblock.opblock-post .opblock-summary {
-      background-color: rgba(73, 204, 144, 0.1);
-    }
-    .swagger-ui .opblock.opblock-put .opblock-summary {
-      background-color: rgba(252, 161, 48, 0.1);
-    }
-    .swagger-ui .opblock.opblock-delete .opblock-summary {
-      background-color: rgba(249, 62, 62, 0.1);
-    }
-    .swagger-ui .opblock.opblock-patch .opblock-summary {
-      background-color: rgba(80, 227, 194, 0.1);
-    }
-
-    /* Smooth edges & spacing */
-    .swagger-ui .opblock .opblock-summary-path,
-    .swagger-ui .opblock .opblock-summary-operation-id {
-      font-weight: 600;
-    }
-  ',
+  customCss,
+  customSiteTitle: 'API Documentation',
   customSiteTitle: 'API Documentation',
 };
 
