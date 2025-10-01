@@ -163,7 +163,7 @@ If you choose to include Swagger UI when generating your project, your API will 
 ### <span style="color: #E74C3C;">Example Screenshot</span>
 
 <div align="center">
-  <img src="https://github.com/aneeshsunganahalli/blob/SwaggerUI/Tin/assets/Swagger-UI.png" alt="Swagger UI" width="80%">
+  <img src="https://github.com/aneeshsunganahalli/Tin/blob/SwaggerUI/assets/Swagger-UI.png" alt="Swagger UI" width="80%">
   <br>
   <em>Swagger UI with Dark Mode Theme</em>
 </div>
