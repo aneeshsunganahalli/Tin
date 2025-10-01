@@ -163,7 +163,7 @@ If you choose to include Swagger UI when generating your project, your API will 
 ### <span style="color: #E74C3C;">Example Screenshot</span>
 
 <div align="center">
-  <img src="https://github.com/aneeshsunganahalli/Tin/raw/main/assets/swagger-ui-dark.png" alt="Swagger UI Dark Mode" width="80%">
+  <img src="https://github.com/aneeshsunganahalli/blob/SwaggerUI/Tin/assets/Swagger-UI.png" alt="Swagger UI" width="80%">
   <br>
   <em>Swagger UI with Dark Mode Theme</em>
 </div>
@@ -333,32 +333,9 @@ npm run dev
 | Interactive CLI | ✅ | ❌ | ✅ |
 | Git Integration | ✅ | ❌ | ✅ |
 
-## 🚀 Popular Use Cases
-
-- **RESTful APIs**: Create a robust API server with authentication
-- **Backend Services**: Set up microservices with a standardized structure
-- **Full-stack Applications**: Use as a backend for React, Vue, or Angular apps
-- **Proof of Concepts**: Quickly scaffold ideas with a solid foundation
-- **Learning Projects**: Ideal for teaching Express.js best practices
-
-## 👥 Contributing
-
-Contributions are welcome! Please check out our [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
 ## 📄 License
 
 This project is licensed under the **ISC License**.
-
-## 📞 Support
-
-If you have any questions or need help, please [open an issue](https://github.com/aneeshsunganahalli/Tin/issues) or contact the maintainers.
-
-## 🙏 Acknowledgements
-
-- Express.js team for the amazing framework
-- MongoDB team for the powerful database
-- All our contributors and users
-
 ---
 
 <div align="center">
