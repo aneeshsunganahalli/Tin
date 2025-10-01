@@ -1,7 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
-import { createSwaggerCSSFile } from './swaggerCssUtils.js';
 
 /**
  * Sets up Swagger UI in the project by adding required dependencies and configuration files
@@ -23,6 +22,7 @@ export async function setupSwaggerUI(
     packageJson.dependencies = {
       ...packageJson.dependencies,
       'swagger-ui-express': '^5.0.0',
+      'swagger-themes': '^1.2.28',
     };
     
     // Add dev dependencies for TypeScript projects
@@ -39,16 +39,13 @@ export async function setupSwaggerUI(
     // 2. Create OpenAPI yaml file
     await createOpenAPIYAMLFile(targetPath, isTS, port);
     
-    // 3. Create Swagger CSS file
-    await createSwaggerCSSFile(targetPath);
-    
-    // 4. Set up Swagger UI configuration
+    // 3. Set up Swagger UI configuration
     await createSwaggerConfig(targetPath, isTS);
     
-    // 5. Update index file to include Swagger UI
+    // 4. Update index file to include Swagger UI
     await updateIndexFile(targetPath, isTS);
     
-    console.log(chalk.green.bold('✨ Swagger UI has been set up in dark mode!'));
+    console.log(chalk.green.bold('✨ Swagger UI has been set up with swagger-themes dark mode!'));
   } catch (error) {
     console.error(chalk.red.bold('Failed to set up Swagger UI:'), error);
     throw error;
@@ -63,6 +60,7 @@ async function createOpenAPIYAMLFile(
   isTS: boolean,
   port: number
 ): Promise<void> {
+  // Make sure we have valid YAML formatting
   const openApiContent = `openapi: 3.0.0
 info:
   title: Express API
@@ -182,8 +180,9 @@ components:
       bearerFormat: JWT
 `;
 
-  const docsDir = path.join(targetPath, isTS ? 'src/docs' : 'src/docs');
+  const docsDir = path.join(targetPath, 'src/docs');
   await fs.ensureDir(docsDir);
+  // Ensure proper YAML format and write to file
   await fs.writeFile(path.join(docsDir, 'openapi.yaml'), openApiContent);
 }
 
@@ -201,6 +200,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { fileURLToPath } from 'url';
+import { SwaggerTheme } from 'swagger-themes';
 
 // Get directory path
 const __filename = fileURLToPath(import.meta.url);
@@ -208,16 +208,26 @@ const __dirname = path.dirname(__filename);
 
 // Load OpenAPI YAML file
 const openApiPath = path.join(__dirname, '..', 'docs', 'openapi.yaml');
-const openApiSpec = yaml.load(fs.readFileSync(openApiPath, 'utf8')) as Record<string, any>;
+const openApiSpecString = fs.readFileSync(openApiPath, 'utf8');
 
-// Load custom CSS file
-const cssFilePath = path.join(__dirname, '..', 'styles', 'swagger-dark.css');
-const customCss = fs.readFileSync(cssFilePath, 'utf8');
+// Parse YAML with error handling
+let openApiSpec: Record<string, any>;
+try {
+  openApiSpec = yaml.load(openApiSpecString) as Record<string, any>;
+} catch (error) {
+  console.error('Error parsing OpenAPI YAML file:', error);
+  openApiSpec = {} as Record<string, any>;
+}
+
+// Initialize swagger-themes
+const theme = new SwaggerTheme();
+const darkStyle = theme.getBuffer('dark');
 
 // Swagger UI options for dark mode
 const options = {
-  customCss,
+  customCss: darkStyle,
   customSiteTitle: 'API Documentation',
+  explorer: false
 };
 
 export { swaggerUi, openApiSpec, options };
@@ -227,6 +237,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { fileURLToPath } from 'url';
+import { SwaggerTheme } from 'swagger-themes';
 
 // Get directory path
 const __filename = fileURLToPath(import.meta.url);
@@ -234,23 +245,33 @@ const __dirname = path.dirname(__filename);
 
 // Load OpenAPI YAML file
 const openApiPath = path.join(__dirname, '..', 'docs', 'openapi.yaml');
-const openApiSpec = yaml.load(fs.readFileSync(openApiPath, 'utf8'));
+const openApiSpecString = fs.readFileSync(openApiPath, 'utf8');
 
-// Load custom CSS file
-const cssFilePath = path.join(__dirname, '..', 'styles', 'swagger-dark.css');
-const customCss = fs.readFileSync(cssFilePath, 'utf8');
+// Parse YAML with error handling
+let openApiSpec;
+try {
+  openApiSpec = yaml.load(openApiSpecString);
+} catch (error) {
+  console.error('Error parsing OpenAPI YAML file:', error);
+  openApiSpec = {};
+}
+
+// Initialize swagger-themes
+const theme = new SwaggerTheme();
+const darkStyle = theme.getBuffer('dark');
 
 // Swagger UI options for dark mode
 const options = {
-  customCss,
+  customCss: darkStyle,
   customSiteTitle: 'API Documentation',
-  customSiteTitle: 'API Documentation',
+  explorer: false
 };
 
 export { swaggerUi, openApiSpec, options };
 `;
 
   const configDir = path.join(targetPath, isTS ? 'src/config' : 'src/config');
+  await fs.ensureDir(configDir);
   await fs.writeFile(path.join(configDir, isTS ? 'swagger.ts' : 'swagger.js'), swaggerConfigContent);
 
   // Add js-yaml dependency
@@ -311,6 +332,7 @@ async function updateIndexFile(
   // Look for the root route handler or any route definition
   const routePattern = /(app\.get\("\/.*\)|app\.use\(.*\)|app\.post\(.*\)|app\.put\(.*\)|app\.delete\(.*\))/;
   const swaggerMiddleware = `\n// Swagger UI
+// Serve Swagger UI at /api-docs endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, options));
 
 `;

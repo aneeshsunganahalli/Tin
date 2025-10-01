@@ -5,7 +5,7 @@ import { TemplateOptions } from './cli/prompts.js';
 import { displaySuccessMessage } from './utils/displayUtils.js';
 import { checkProjectExists, createEnvFile, createGitIgnore, updatePackageJson } from './utils/fileUtils.js';
 import { createDockerFiles } from './utils/dockerUtils.js';
-import { setupSwaggerUI } from './utils/swagger-ui/swaggerUtils.js';
+import { setupSwaggerUI } from './utils/swaggerUtils.js';
 import { copyTemplate, findTemplatePath } from './templates/manager.js';
 import { gitInitFast, installDependenciesAsync } from './utils/installUtils.js';
 
