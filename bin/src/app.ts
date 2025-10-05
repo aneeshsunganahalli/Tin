@@ -37,7 +37,7 @@ export async function createProject(
   try {
     copyTemplate(templatePath, targetPath);
     updatePackageJson(targetPath, projectName);
-    createEnvFile(targetPath, template.port); // Create .env file with user-specified port
+    createEnvFile(targetPath, template, projectName); // Create .env file with auto-generated values
     createGitIgnore(targetPath)
     
     // Add Docker files if selected

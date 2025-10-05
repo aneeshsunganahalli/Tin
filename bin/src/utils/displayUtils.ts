@@ -29,8 +29,18 @@ export function displaySuccessMessage(
   console.log(`     Git:      ${initGit ? chalk.green.bold('✓ Initialized') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Docker:   ${docker ? chalk.green.bold('✓ Configured') : chalk.yellow.bold('✗ Skipped')}`);
   console.log(`     Swagger:  ${swagger ? chalk.green.bold('✓ Configured (Dark Mode)') : chalk.yellow.bold('✗ Skipped')}`);
-  console.log(`     Database: ${chalk.magenta.bold('MONGODB_URI')} ${chalk.gray('(configurable in .env)')}`);
-  console.log(`     Port:     ${chalk.cyan.bold(port)} ${chalk.gray('(configurable in .env)')}`);
+  console.log();
+  console.log(chalk.bold('  🔐 Environment Configuration:'));
+  console.log(`     ${chalk.green.bold('.env file')} has been auto-generated with:`);
+  console.log(`     • Port:       ${chalk.cyan.bold(port)}`);
+  console.log(`     • Database:   ${chalk.magenta.bold('MongoDB')} ${chalk.gray('(local or Docker)')}`);
+  console.log(`     • JWT Secret: ${chalk.yellow.bold('Auto-generated')} ${chalk.gray('(cryptographically secure)')}`);
+  if (docker) {
+    console.log(`     • Docker:     ${chalk.blue.bold('Configured')} ${chalk.gray('(MongoDB on mongo:27017)')}`);
+  }
+  if (swagger) {
+    console.log(`     • Swagger:    ${chalk.blue.bold('Enabled')} ${chalk.gray('(API documentation settings)')}`);
+  }
   console.log();
   console.log(chalk.bold('  🚀 Next steps:'));
   console.log(chalk.cyan(`     cd ${projectName}`));
@@ -41,5 +51,6 @@ export function displaySuccessMessage(
     console.log(chalk.cyan(`     http://localhost:${port}/api-docs`));
   }
   console.log();
+  console.log(chalk.gray('  💡 Tip: Check .env for configuration, .env.example for reference'));
   console.log(chalk.gray('  Happy coding! 🎯'));
 }

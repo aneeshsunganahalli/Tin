@@ -42,6 +42,7 @@
 > - 🚀 **Modular architecture** with best practices  
 > - 🛠️ **Pre-configured development** environment  
 > - 📝 **Error handling** middleware ready to use  
+> - 🔐 **Auto-generated `.env` files** with secure defaults  
 
 ---
 
@@ -198,6 +199,7 @@ my-api-project/
 │   │   ├── constants.ts
 │   │   └── index.d.ts
 │   └── index.ts
+├── .env
 ├── .env.example
 ├── .gitignore
 ├── package.json
@@ -229,6 +231,7 @@ my-api-project/
 │   ├── routes/
 │   │   └── authRoutes.js
 │   └── index.js
+├── .env
 ├── .env.example
 ├── .gitignore
 ├── package.json
@@ -280,14 +283,16 @@ npm run dev
 > 📊 **MongoDB Integration**  
 > Complete setup with Mongoose ODM  
 
-> � **API Documentation**  
+> 📚 **API Documentation**  
 > - **Swagger UI Integration** - Interactive API explorer  
 > - **Dark Mode Interface** - Modern and readable design  
 > - **OpenAPI 3.0** - Comprehensive API specification  
 > - **Pre-configured Auth Routes** - Ready to test and extend  
 
-> �🔧 **Environment Variables**  
-> Configuration setup included  
+> 🔧 **Environment Variables**  
+> - **Auto-generated `.env`** - Ready to use with secure JWT secrets  
+> - **Context-aware configuration** - Adapts to Docker, Swagger, and port settings  
+> - **`.env.example` included** - Template for deployment reference  
 
 > ⚠️ **Error Handling**  
 > Professional middleware implementation  
