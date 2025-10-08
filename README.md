@@ -3,7 +3,7 @@
 <div align="center">
 
 ![Tin Project Logo](https://img.shields.io/badge/Tin-Express%20Generator-4A90E2?style=for-the-badge&logo=express&logoColor=white)
-![Version](https://img.shields.io/badge/version-2.4.1-6495ED?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.5.2-6495ED?style=for-the-badge)
 ![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-44883e?style=for-the-badge&logo=node.js&logoColor=white)
 ![License](https://img.shields.io/badge/license-ISC-orange?style=for-the-badge)
 ![Downloads](https://img.shields.io/npm/dm/create-tin?style=for-the-badge)
