@@ -6,7 +6,8 @@
 ![Version](https://img.shields.io/badge/version-2.5.2-6495ED?style=for-the-badge)
 ![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-44883e?style=for-the-badge&logo=node.js&logoColor=white)
 ![License](https://img.shields.io/badge/license-ISC-orange?style=for-the-badge)
-![Downloads](https://img.shields.io/npm/dm/create-tin?style=for-the-badge)
+![Downloads](https://img.shields.io/npm/dt/create-tin?style=for-the-badge)
+
 
 **A modern command-line tool for quickly scaffolding Express.js applications with TypeScript or JavaScript**
 
